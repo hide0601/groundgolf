@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <?!= HtmlService.createHtmlOutputFromFile('css').getContent(); ?>
+  <link href="https://fonts.googleapis.com/css?family=Noto+Sans+JP:400,700&display=swap&subset=japanese" rel="stylesheet">
+</head>
+
+<body>
+  <h2 title="GAME No.<?=gameid ?>">大会名.<?=vgidnammehtml ?></h2>
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0/dist/Chart.min.js"></script>
+   
+  <div class="block" id="app">
+  <p class="h_web_font_b">{{ lists[0] }}セット　{{ lists[1] }}ゲーム ｜ サーブ：{{ server }}</p><hr>
+  <table id="table05" align="center">
+      <thead>
+        <tr>
+          <th></th>
+          <th class = "playerA">先行（Ａ）<br><?=playerA ?></th>
+          <th class = "playerB">後攻（Ｂ）<br><?=playerB ?></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th>スコア</th>
+          <td>{{ lists[6] }}</td>
+          <td>{{ lists[7] }}</td>
+        </tr>
+        <tr>
+          <th>ゲーム</th>
+          <td>{{ lists[8] }}</td>
+          <td>{{ lists[9] }}</td>
+        </tr>
+        <tr>
+          <th>セット</th>
+          <td>{{ lists[10] }}</td>
+          <td>{{ lists[11] }}</td>
+        </tr>
+
+      </tbody>
+    </table>
+
+    <button class="button1" @click="get_sheet(<?=gameid ?>,'<?=com_ssId?>');get_graff(<?=gameid ?>,'<?=com_ssId?>')" >データ更新</button>
+    <!--自動更新はグラフが動かないので停止
+      <p class = "h_web_font_r">更新ボタン押下後は自動更新（30秒）</p>
+    -->
+    
+    <div class="parent">
+    <div class="chart-container" style="position: relative; width:100%; height:100%">
+    <p><canvas id="myChart_total_stats"></canvas>
+    </div>
+
+    <div class="chart-container" style="position: relative; width:100%; height:100%">
+    <p><canvas id="myChart_total_serveA"></canvas>
+    </div>
+    </div>   
+    
+    </div> <!--vue app終わり-->
+
+<script>
+  var vm = new Vue({
+    el: '#app',
+      data: {
+      lists:[],
+      lists_stats:[],
+      server:<?=playerA ?>
+    },
+    methods: {
+        get_sheet: function(sheetname,ssId){
+      //GAS内のコード読み出し
+        google.script.run
+          .withSuccessHandler(function (data) {
+            // GAS正常終了時の処理
+           console.log('正常　取得したデータ: ' + data);
+           vm.lists = data;
+           vm.server = data[3];
+           if (data[3] == 'A'){
+             vm.server = <?=playerA ?>;
+           }
+           else{
+             vm.server = <?=playerB ?>;
+           }
+           console.log(server);
+          })
+          .withFailureHandler(function (data) {
+            // GASエラー時の処理
+            console.log('エラーgetsheet　取得したデータ: ' + JSON.stringify(data));
+          })
+          .get_latest_score(sheetname,ssId);
+//タイマーはグラフが動かないので保留
+//          this.timer(sheetname,ssId);
+
+      },
+      
+
+        get_graff: async function(sheetname,ssId) {
+        const ps_data_all = await this.getSheetData(sheetname,ssId);
+        console.log('成功!(graff)取得したデータ: ' + ps_data_all);
+        var ps_data = ps_data_all[0];
+        var ps_data_server = ps_data_all[1];
+        
+        var ps_data_total = ps_data.slice(0,2);
+        var ps_data_serveA = ps_data.slice(2,3);
+        var ps_data_serveA_loss = 1-ps_data_serveA;
+        
+        var ps_data_serveB = ps_data.slice(3,4);
+        var ps_data_serveB_loss = 1-ps_data_serveB;
+        
+        var ps_data_serveA = [ps_data_serveA,ps_data_serveA_loss];
+        var ps_data_serveB = [ps_data_serveB,ps_data_serveB_loss];
+
+        this.ps_data_total = ps_data_total;
+        this.ps_data_serveA = ps_data_serveA;
+        this.ps_data_serveB = ps_data_serveB;
+
+        this.displayGraph_total(ps_data_total);
+
+        if(ps_data_server == 'A'){
+          this.displayGraph_serveA(ps_data_serveA);
+        }
+        else{
+        
+          this.displayGraph_serveB(ps_data_serveB);
+        }
+      },
+      getSheetData: function(sheetname,ssId) {
+        console.log('sheetname2: ' + sheetname);
+        //コード.js内のgetSheetData()を実行
+        return new Promise((resolve, reject) => {
+          google.script.run
+            .withSuccessHandler((result) => resolve(result))
+            .withFailureHandler((error) => resolve(error))
+            .point_stats(sheetname,ssId);
+        });
+      },    
+      displayGraph_total: function(){
+      var ctx = document.getElementById('myChart_total_stats').getContext('2d');
+      var myChart_total_stats = new Chart(ctx, {
+      type: 'pie',
+      data: {
+          labels: ['A','B'],
+          datasets: [{
+              label: 'PointStats',
+              backgroundColor: [
+                "#ffec64",
+                "#3d94f6"
+              ],
+              data:this.ps_data_total
+          }]
+      },
+      options: {
+        title: {
+           display: true,
+           fontSize: 12,
+           text: 'TotalPointStats'
+        },
+           cutoutPercentage:50,
+           maintainAspectRatio: false,
+      },       
+      });
+     },//Graph関数の終わり 
+      displayGraph_serveA: function(){
+      var ctx = document.getElementById('myChart_total_serveA').getContext('2d');
+      var myChart_total_serveA = new Chart(ctx, {
+      type: 'pie',
+      data: {
+          labels: ['In','Out'],
+          datasets: [{
+              label: 'Serve[A]Stats',
+              backgroundColor: [
+                "#ffec64",
+                "#808080"
+              ],
+              data:this.ps_data_serveA
+          }]
+      },
+      options: {
+        title: {
+           display: true,
+           fontSize: 12,
+           text: 'ServeAStats'
+        },
+           cutoutPercentage:50,
+           maintainAspectRatio: false,
+      },       
+      });
+     },//GraphA関数の終わり 
+     
+      displayGraph_serveB: function(){
+      var ctx = document.getElementById('myChart_total_serveA').getContext('2d');
+      var myChart_total_serveA = new Chart(ctx, {
+      type: 'pie',
+      data: {
+          labels: ['In','Out'],
+          datasets: [{
+              label: 'Serve[B]Stats',
+              backgroundColor: [
+                "#3d94f6",
+                "#808080"
+              ],
+              data:this.ps_data_serveB
+          }]
+      },
+      options: {
+        title: {
+           display: true,
+           fontSize: 12,
+           text: 'ServeBStats'
+        },
+           cutoutPercentage:50,
+           maintainAspectRatio: false,
+      },       
+      });
+     },//GraphB関数の終わり 
+
+//定期実行（未完・停止が必要とグラフ）
+  timer : function(sheetname,ssId){
+    setInterval(function(){
+      console.log('タイマー');
+      google.script.run
+        .withSuccessHandler(function (data) {
+            // GAS正常終了時の処理
+           console.log('正常　取得したデータ: ' + data);
+           vm.lists = data;
+           vm.server = data[3];
+           if (data[3] == 'A'){
+             vm.server = <?=playerA ?>;
+           }
+           else{
+             vm.server = <?=playerB ?>;
+           }
+           console.log(server);
+           this.get_graff(sheetname,ssId);//動いていない｡｡          
+          })
+          .withFailureHandler(function (data) {
+            // GASエラー時の処理
+           console.log('エラーtimer　取得したデータ: ' + JSON.stringify(data));
+          })
+          .get_latest_score(sheetname,ssId);
+      },10000);
+    },//定期実行の終わり
+
+
+/*stats情報の入手
+  get_stats : function(sheetname,ssId){
+    google.script.run
+      .withSuccessHandler(function (data) {
+            // GAS正常終了時の処理
+      console.log('正常　取得したデータ: ' + data);
+           vm.lists_stats = data;
+                    })
+          .withFailureHandler(function (data) {
+            // GASエラー時の処理
+            console.log('エラーstats　取得したデータ: ' + JSON.stringify(data));
+          })
+          .GetTennisStats(sheetname,ssId);
+    },//stats情報入手の終わり
+*/
+
+},//methodの終わり
+    mounted:function(){
+      this.lists = [1,1,,,,,0,0,0,0,0,0];
+     },
+})
+
+</script>
+
+</body>
+
+</html>

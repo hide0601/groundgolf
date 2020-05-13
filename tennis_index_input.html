@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <base target="_top">
+    <style>
+      table{
+        border: solid 1px #000000;
+        border-collapse: collapse;
+      }
+      th {border: solid 1px #000000}
+      td {border: solid 1px #000000}
+    </style>
+    <?!= HtmlService.createHtmlOutputFromFile('css').getContent(); ?>
+    <link href="https://fonts.googleapis.com/css?family=Noto+Sans+JP:400,700&display=swap&subset=japanese" rel="stylesheet">
+
+</head>
+
+<body>
+<p class = "h_web_font_b">会社名：<?=com_name?></p>
+<div class="kakomi-maru2" >
+テニスの試合情報（STATS）を入力
+</div>
+    <form method="post" action="https://script.google.com/macros/s/AKfycbxvGGpIC6ZsJEnI5c5V0e6-hRX2oVhqf5iRRGjI2jZsatLHPMsB/exec?param=tennis_input" accept-charset="utf-8">
+    <p class = "h_web_font">セット数</p>
+    <div class="radio_button1">
+    <input type="radio" name="sn" id="select1" value=3 checked=""><label for="select1">5セット</label>
+    <input type="radio" name="sn" id="select2" value=2><label for="select2"> 3セット</label><br><br>
+    </div>
+
+    <p class = "h_web_font">タイブレーク　ゲーム数</p>
+    <div class="radio_button1">
+    <input type="radio" name="tb" id="select3" value=7 checked=""><label for="select3">7ゲーム</label>
+    <input type="radio" name="tb" id="select4" value=10><label for="select4">10ゲーム</label><br><br><br>
+    </div>
+    
+    <div class = "h_web_font">
+    <label>試合名　：<input type="text" name="gamename" maxlength="10"placeholder="10文字以内"></label><br>
+    <label>先行選手：<input type="text" name="mem1"maxlength="10"placeholder="10文字以内"></label><br>    
+    <label>後攻選手：<input type="text" name="mem2"maxlength="10"placeholder="10文字以内"></label><br><br>
+    <input type="hidden" name="com_ssId" value= "<?=com_ssId?>">
+    <input type="submit" class = "form_button" value="送信する"><br><br><hr>
+    </div>
+    </form>
+    
+<div class="kakomi-maru2">
+テニスの試合を観戦
+</div><br>
+    <form method="post" action="https://script.google.com/macros/s/AKfycbxvGGpIC6ZsJEnI5c5V0e6-hRX2oVhqf5iRRGjI2jZsatLHPMsB/exec?param=tennis_view" accept-charset="utf-8">   
+    <div class = "h_web_font">
+    <label>試合番号：<input type="number" name="viewgid"></label><br><br>
+    <input type="hidden" name="com_ssId" value= "<?=com_ssId?>">
+    <input type="submit" class = "form_button" value="送信する">
+    </div>
+    </form>
+</body>
+</html>

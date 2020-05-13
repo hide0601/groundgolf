@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <?!= HtmlService.createHtmlOutputFromFile('css').getContent(); ?>
+  <link href="https://fonts.googleapis.com/css?family=Noto+Sans+JP:400,700&display=swap&subset=japanese" rel="stylesheet">
+</head>
+
+<body>
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0/dist/Chart.min.js"></script>  
+
+  <div class="block" id="app">
+
+  <h4>大会名.<?=game_name ?></h4>
+  <h4>Hole {{ hole }}</h4>
+  <div class="parent">
+
+  <div>
+  <!--
+    <label for="sr1"><?=player1 ?>：</label>
+    <input type="text" v-model="sr1"number><br>
+    
+    <label for="sr2"><?=player2 ?>：</label>
+    <input type="text" v-model="sr2"number><br>
+    
+    <label for="sr3"><?=player3 ?>：</label>
+    <input type="text" v-model="sr3"number><br>
+    
+    <label for="sr4"><?=player4 ?>：</label>
+    <input type="text" v-model="sr4"number><br>
+    
+    <label for="sr5"><?=player5 ?>：</label>
+    <input type="text" v-model="sr5"number><br>
+  -->  
+    <label for="sr1"><?=player1 ?>：</label>
+    <input type="range" max="20" step="1"v-model="sr1"
+    oninput="document.getElementById('Score_1').innerHTML = this.value" />
+        <label id="Score_1"></label><br>
+    <label for="sr2"><?=player2 ?>：</label>
+    <input type="range" max="20" step="1"v-model="sr2"
+    oninput="document.getElementById('Score_2').innerHTML = this.value" />
+        <label id="Score_2"></label><br>
+    <label for="sr3"><?=player3 ?>：</label>
+    <input type="range" max="20" step="1"v-model="sr3"
+    oninput="document.getElementById('Score_3').innerHTML = this.value" />
+        <label id="Score_3"></label><br>
+    <label for="sr4"><?=player4 ?>：</label>
+    <input type="range" max="20" step="1"v-model="sr4"
+    oninput="document.getElementById('Score_4').innerHTML = this.value" />
+        <label id="Score_4"></label><br>
+    <label for="sr5"><?=player5 ?>：</label>
+    <input type="range" max="20" step="1"v-model="sr5"
+    oninput="document.getElementById('Score_5').innerHTML = this.value" />
+        <label id="Score_5"></label><br>
+    <button class="button1" @click="put_score(<?=gameid ?>,'<?=com_ssId?>',sr1,sr2,sr3,sr4,sr5);get_graff(<?=gameid ?>,'<?=com_ssId?>')" >データ更新</button>
+  
+    <div class="chart-container" style="position: relative; width:100%; height:100%">
+    <p><canvas id="myChart_total_stats"></canvas>
+    </div>
+
+  </div>
+  </div>
+  </div>
+
+
+<script>
+var vm = new Vue({
+  el: '#app',
+    data: {
+      hole:1,
+      sr1: '',
+      sr2: '',
+      sr3: '',
+      sr4: '',
+      sr5: '',
+      ps_data:[],
+  },
+  methods: {
+    put_score: function (sheetname,ssId,sr1,sr2,sr3,sr4,sr5) {
+    google.script.run
+          .withSuccessHandler(function (data) {
+          // GAS正常終了時の処理
+            console.log('正常　取得したデータ: ' + data);
+            vm.hole=data;
+          })
+          .withFailureHandler(function (data) {
+          // GASエラー時の処理
+            console.log('エラー　取得したデータ: ' + JSON.stringify(data));
+          })
+　　　　　　.GG_PointInput(sheetname,ssId,sr1,sr2,sr3,sr4,sr5);
+    },
+    get_graff: async function(sheetname,ssId) {
+      const ps_data_all = await this.getSheetData(sheetname,ssId);
+      var ps_data = ps_data_all[0];
+      console.log('pa_data ' + ps_data);
+      this.ps_data = ps_data;     
+      this.displayGraph_total(ps_data);
+      this.sr1 = '';
+      this.sr2 = '';
+      this.sr3 = '';
+      this.sr4 = '';
+      this.sr5 = '';
+      },
+      getSheetData: function(sheetname,ssId) {
+        console.log('sheetname2: ' + sheetname);
+        //コード.js内のgetSheetData()を実行
+        return new Promise((resolve, reject) => {
+          google.script.run
+            .withSuccessHandler((result) => resolve(result))
+            .withFailureHandler((error) => resolve(error))
+            .GG_point_stats(sheetname,ssId);
+        });
+      },    
+      displayGraph_total: function(){
+      var ctx = document.getElementById('myChart_total_stats').getContext('2d');
+      var myChart_total_stats = new Chart(ctx, {
+        type: "bar",
+        data:{
+         labels:[<?=player1 ?>,<?=player2 ?>,<?=player3 ?>,<?=player4 ?>,<?=player5 ?>],
+         datasets:[{
+         label: 'TotalScore',
+         data:this.ps_data
+         }]
+       },
+     options:{    
+/*     title: {
+       display: true,
+       fontSize: 12,
+       text: 'TotalScore'
+       },
+*/ 
+     },
+     });
+    },
+},//method終わり
+})
+</script>
+
+
+</body>
+</html>

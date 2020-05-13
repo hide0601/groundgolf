@@ -1,0 +1,306 @@
+<style>
+
+div { text-align : center ; }
+
+.button1 {
+  display       : inline-block;
+  border-radius:38px;
+  font-size     : 14pt;        /* 文字サイズ */
+  text-align    : center;      /* 文字位置   */
+  cursor        : pointer;     /* カーソル   */
+  background    : #ffec64;     /* 背景色     */
+  color         : #333333;     /* 文字色     */
+  line-height   : 1em;         /* 1行の高さ  */
+  transition    : .3s;         /* なめらか変化 */
+  width: 150px;
+  height: 30px;
+  border-color:transparent;
+}
+
+.button2 {
+  display       : inline-block;
+  border-radius:38px;
+  font-size     : 14pt;        /* 文字サイズ */
+  text-align    : center;      /* 文字位置   */
+  cursor        : pointer;     /* カーソル   */
+  background    : #3d94f6;     /* 背景色     */
+  color         : #ffffff;     /* 文字色     */
+  line-height   : 1em;         /* 1行の高さ  */
+  opacity       : 1;           /* 透明度     */
+  transition    : .3s;         /* なめらか変化 */
+  width: 150px;
+  height: 30px;
+  border-color:transparent;
+}
+
+.button3 {
+  display       : inline-block;
+  font-size     : 14pt;        /* 文字サイズ */
+  text-align    : center;      /* 文字位置   */
+  cursor        : pointer;     /* カーソル   */
+  background    : #ffec64;     /* 背景色     */
+  color         : #333333;     /* 文字色     */
+  line-height   : １em;         /* 1行の高さ  */
+  opacity       : 1;           /* 透明度     */
+  transition    : .3s;         /* なめらか変化 */
+  width: 150px;
+  height: 30px;
+  border-color:transparent;
+}
+
+.button4 {
+  display       : inline-block;
+  font-size     : 14pt;        /* 文字サイズ */
+  text-align    : center;      /* 文字位置   */
+  cursor        : pointer;     /* カーソル   */
+  background    : #3d94f6;     /* 背景色     */
+  color         : #ffffff;     /* 文字色     */
+  line-height   : 1em;         /* 1行の高さ  */
+  opacity       : 1;           /* 透明度     */
+  transition    : .3s;         /* なめらか変化 */
+  width: 150px;
+  height: 30px;
+  border-color:transparent;
+}
+
+.button5 {
+  display       : inline-block;
+  font-size     : 14pt;        /* 文字サイズ */
+  text-align    : center;      /* 文字位置   */
+  cursor        : pointer;     /* カーソル   */
+  background    : #dc143c;     /* 背景色     */
+  color         : #ffffff;     /* 文字色     */
+  line-height   : 1em;         /* 1行の高さ  */
+  opacity       : 1;           /* 透明度     */
+  transition    : .3s;         /* なめらか変化 */
+  width: 150px;
+  height: 30px;
+  border-color:transparent;
+}
+
+.button6 {
+  display       : inline-block;
+  font-size     : 10pt;        /* 文字サイズ */
+  text-align    : center;      /* 文字位置   */
+  cursor        : pointer;     /* カーソル   */
+  background    : #37fa92;     /* 背景色     */
+  color         : #4f8df7;     /* 文字色     */
+  line-height   : 1em;         /* 1行の高さ  */
+  opacity       : 1;           /* 透明度     */
+  transition    : .3s;         /* なめらか変化 */
+  width: 150px;
+  height: 30px;
+  border-color:transparent;
+}
+
+h2{
+	position: relative;
+    font-family: 'Noto Sans JP', sans-serif;
+	height: 60px;
+	line-height: 60px;
+	padding: 0 0 0 20px;
+	font-size:12px;
+	border: 1px solid #325A8C;
+	border-radius: 6px;
+}
+h2::before{
+    font-family: 'Noto Sans JP', sans-serif;
+	content: attr(title);
+	position: absolute;
+	right: 0;
+	top: 0;
+	padding:0 20px;
+	font-size:15px;
+	background: #325A8C;
+	color: #fff;
+}
+canvas_c {
+	margin:0 auto;
+}
+
+p.ff_kosugi {
+  font-family: 'Noto Sans JP', sans-serif;
+  font-size:10pt;
+  text-align: left;
+  color: #8d21f3;
+}
+
+p.ff_kosugi_red {
+  font-family: 'Noto Sans JP', sans-serif;
+  font-size:10pt;
+  text-align: left;
+  color: #f34b21;
+}
+
+p.ff_kosugi_blue {
+  font-family: 'Noto Sans JP', sans-serif;
+  font-size:10pt;
+  text-align: left;
+  color: #216bf3;
+}
+
+
+.radio_button1 input{
+	display: none;
+}
+.radio_button1 label{
+    font-family: 'Noto Sans JP', sans-serif;
+	display: block;
+	float: left;
+	cursor: pointer;
+	width: 80px;
+	margin: 0;
+	padding: 12px 5px;
+	border-right: 1px solid #abb2b7;
+	background: #bdc3c7;
+	color: #555e64;
+	font-size: 14px;
+	text-align: center;
+	line-height: 1;
+	transition: .2s;
+}
+.radio_button1 label:first-of-type{
+	border-radius: 3px 0 0 3px;
+}
+.radio_button1 label:last-of-type{
+	border-right: 0px;
+	border-radius: 0 3px 3px 0;
+}
+.radio_button1 input[type="radio"]:checked + label {
+	background-color: #a1b91d;
+	color: #fff;
+}
+
+
+.form_button {
+  display       : inline-block;
+  font-size     : 11pt;        /* 文字サイズ */
+  text-align    : center;      /* 文字位置   */
+  cursor        : pointer;     /* カーソル   */
+  padding       : 9px 30px;   /* 余白       */
+  background    : #999999;     /* 背景色     */
+  color         : #ffffff;     /* 文字色     */
+  line-height   : 1em;         /* 1行の高さ  */
+  transition    : .3s;         /* なめらか変化 */
+  border        : 2px solid #999999;    /* 枠の指定 */
+}
+.form_button:hover {
+  color         : #999999;     /* 背景色     */
+  background    : #ffffff;     /* 文字色     */
+}	
+
+.kakomi-maru2 {
+ padding: 3px;
+ font-family: 'Noto Sans JP', sans-serif;
+ font-size:12pt;
+ text-align: left;
+ margin-right:30%;
+ width: 280px; /*幅の調節*/
+ color: #FFFFFF; /*文字色*/
+ background-color: #d1aec9; /*背景色*/
+ border: 2px solid #d1aec9; /*線の太さ・色*/
+ border-radius: 4px; /*角の丸み*/ 
+}
+
+.kakomi-maru3 {
+ padding: 3px;
+ font-family: 'Noto Sans JP', sans-serif;
+ font-size:12pt;
+ text-align: left;
+ margin-right:30%;
+ width: 280px; /*幅の調節*/
+ color: #FFFFFF; /*文字色*/
+ background-color: #8eab9d; /*背景色*/
+ border: 2px solid #8eab9d; /*線の太さ・色*/
+ border-radius: 4px; /*角の丸み*/ 
+}
+
+.h_web_font{
+ font-family: 'Noto Sans JP', sans-serif;
+ font-size:10pt;
+ text-align: left;
+}
+
+.h_web_font_b{
+ font-family: 'Noto Sans JP', sans-serif;
+ font-size:10pt;
+ text-align: left;
+ color:#0000FF;
+}
+
+.h_web_font_r{
+ font-family: 'Noto Sans JP', sans-serif;
+ font-size:10pt;
+ text-align: left;
+ color:#ff0000;
+}
+
+#table05 th,#table05 td {
+  font-family: 'Noto Sans JP', sans-serif;
+  font-size:10pt;
+  margin-right:auto;
+  padding: 5px;
+  border-collapse: collapse; 
+  width: auto;
+}
+#table05 thead th {
+  width: 300px;
+  background: #5e9bcc;
+  color: #fff;
+  border: 0px none;
+}
+#table05 thead th.playerA {
+  width: 300px;
+  background: #ffec64;
+  color: #01000a;
+  border: 0px none;
+}
+#table05 thead th.playerB {
+  width: 300px;
+  background: #3d94f6;
+  color: #ffffff;
+  border: 0px none;
+}
+#table05 tbody th {
+  width: 300px;
+  background: #5e9bcc;
+  color: #fff;
+  font-weight: 400;
+}
+#table05 tbody th.player  {
+  width: 300px;
+  background: #c6c4f2;
+  color: #2615bd;
+  font-weight: 400;
+}
+#table05 tbody td {
+  width: 300px;
+  background: #c4d8f2;
+}
+#table05 tbody td.playerA {
+  width: 300px;
+  color:#01000a;
+  background: #ffec64;
+}
+#table05 tbody td.playerB {
+  width: 300px;
+  color:#ffffff;
+  background: #3d94f6;
+}
+
+
+
+.parent {
+ width: 50%;
+ display: flex;
+}
+
+h_left{
+　text-align:left;
+}
+
+
+
+
+</style>
+
