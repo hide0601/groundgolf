@@ -56,7 +56,7 @@ else if(param == 'ggqa'){
   
  //GrandGolf試合情報登録
  else if (param == 'gg_input'){
-   var ssId = '1tuBaA_yE9fQgojqtp4Mzj-R0gvr0-4-6WjJZyeh6hX8';//GroundGolf_Score_2020_01
+   var ssId = '1tuBaA_yE9fQgojqtp4Mzj-R0gvr0-4-6WjJZyeh6hX8';  //GroundGolf_Score_2020_01
    var ss = SpreadsheetApp.openById(ssId);
    var sh = ss.getSheetByName('gamemaster');
    var lastRow = sh.getLastRow();
@@ -88,8 +88,16 @@ else if(param == 'ggqa'){
    
    
    // gamemasterに試合情報を登録
-   var gameinfo = [[newgid,gamename,starthole,coursename,mem1,mem2,mem3,mem4,mem5,mem6,mem7,mem8,date,email]];
-   sh.getRange(lastRow+1, 1,1,14).setValues(gameinfo);  
+   var gameinfo = [[newgid,date,email,gamename,starthole,coursename,mem1,mem2,mem3,mem4,mem5,mem6,mem7,mem8]];
+   sh.getRange(lastRow+1, 1,1,14).setValues(gameinfo);
+   
+   //人数把握(mem_amount)のため、最終行の最終列を取得
+   var lastRow = sh.getLastRow();   
+   var mem_amount = sh.getRange(lastRow, 1).getNextDataCell(SpreadsheetApp.Direction.NEXT).getColumn();
+   var mem_amount = Number(mem_amount);
+   var mem_amount = mem_amount - 6;
+   console.log('lastRow '+lastRow);
+   console.log('人数 ' + mem_amount);
    
    var point_total_1 = '=sum(B6:B39)';
    var point_total_2 = '=sum(C6:C39)';
