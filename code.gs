@@ -1,311 +1,38 @@
 function doPost(e) {  
   var param = e.parameter.param;
-  // gamemasterシートを取得  
-  var ssId = e.parameter.com_ssId;
-  console.log('param '+param);
   
-//初期（企業コード＆PW確認）　※エラー制御が不十分っぽい
-  if(param == 0){
-　　//lisence_masterのファイルからそのLisence情報を取得
-    var ssId = '1WqaeE3QI3vh5ssTmfXnKr9FvMy-e3Ogss3d-Yr2sw5I';//lisence_masterのファイル
-    var ss = SpreadsheetApp.openById(ssId);
-    var sh = ss.getSheetByName('lisence');
-    var company_id = e.parameter.company_id;//indexからcompany_id取得
-    var company_pw = e.parameter.company_pw;//indexからcompany_pw取得
-    var dat = sh.getDataRange().getValues(); //lisenceシートのデータを二次元配列に取得
-    var col = 2;
-    var val = company_id;
-       for(var i=0;i<dat.length;i++){
-         if(dat[i][col-1] === val){
-           var lisence_id =  i+1;//二次配列を検索して、行番号を入手（ただし、-1）
-           console.log('検索行 '+lisence_id);
-         }
-       }
-     //該当するGameIDがない場合,index_lisence_ngを表示
-     if (lisence_id === void 0){
-          var temp = HtmlService.createTemplateFromFile("index_lisence_ng");
-          return temp.evaluate().setTitle('lisence!Error').addMetaTag('viewport', 'width=device-width, initial-scale=1');
-     }
-    //対象行を入手
-     var lisence_pw = sh.getRange(lisence_id,3,1,1).getValues();
-     var lisence_cat = sh.getRange(lisence_id,5,1,1).getValues();
-     var company_ssId = sh.getRange(lisence_id,4,1,1).getValues();
-     var company_name = sh.getRange(lisence_id,6,1,1).getValues();
-
-    //categoryで対象競技ののTOP画面を表示（tennis以外はまだ適当）
-     switch(true){
-       case(lisence_pw == company_pw && lisence_cat == 'tennis'):
-         var temp = HtmlService.createTemplateFromFile("tennis_index_input");
-         var company_ssId = sh.getRange(lisence_id,4,1,1).getValues();
-         temp.com_ssId = company_ssId;
-         temp.com_name = company_name;
-         return temp.evaluate().setTitle('ViewTennisStats!').addMetaTag('viewport', 'width=device-width, initial-scale=1');
-         break;
-       case(lisence_pw == company_pw && lisence_cat == 'grandgolf'):
-         var temp = HtmlService.createTemplateFromFile("GG_index_input");
-         var company_ssId = sh.getRange(lisence_id,4,1,1).getValues();
-         temp.com_ssId = company_ssId;
-         temp.com_name = company_name;
-         return temp.evaluate().setTitle('GrandGolfStats!').addMetaTag('viewport', 'width=device-width, initial-scale=1');
-         break;
-       case(lisence_pw == company_pw && lisence_cat != 'tennis'):
-         return temp.evaluate().setTitle('ViewTennisStats!Error').addMetaTag('viewport', 'width=device-width, initial-scale=1');
-         break;
-       default:
-         var temp = HtmlService.createTemplateFromFile("index_lisence_ng");
-         return temp.evaluate().setTitle('lisence!Error').addMetaTag('viewport', 'width=device-width, initial-scale=1');
-         break;
-     }
- }//param0のif文終わり  
-
-//新規企業申し込み
-else if(param == 'new'){
-　　//lisence_masterのファイルからそのLisence情報を取得
-    console.log('param new ');
-    var ssId = '1WqaeE3QI3vh5ssTmfXnKr9FvMy-e3Ogss3d-Yr2sw5I';//lisence_masterのファイル
-    var ss = SpreadsheetApp.openById(ssId);
-    var sh = ss.getSheetByName('application');
-    var new_category = e.parameter.new_category;
-    var new_company_name = e.parameter.new_company_name;//indexからcompany_id取得
-    var new_person = e.parameter.new_person;//indexからcompany_pw取得
-    var new_email = e.parameter.new_email;//indexからcompany_pw取得
-    var date = GetNow();
-    var lastRow = sh.getLastRow();
-    var new_application_info = [[new_category,new_company_name,new_person,new_email,date]];
-    console.log(new_application_info);
-    sh.getRange(lastRow+1,1,1,5).setValues(new_application_info);
-    var text = '新規申込' + '_企業名：'+ new_company_name + '_担当者：' +new_person;
-    const post_url = 'https://hooks.slack.com/services/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';
-    const user_name = 'StatsMe';
-    const send_data = {
-        'username': user_name,
-        'text': text
-    };
-    console.log(send_data);
-    const options = {
-        'method': 'post',
-        'contentType': 'application/json',
-        'payload': JSON.stringify(send_data)
-    };
-    console.log(options);
-    UrlFetchApp.fetch(post_url, options)
-    var temp = HtmlService.createTemplateFromFile("application_reslut");
-    return temp.evaluate().setTitle('申込完了').addMetaTag('viewport', 'width=device-width, initial-scale=1');
-}//新規企業申し込み（param = new)の終わり
-
-//TennisStats作成ページ
- else if (param == 'tennis_input'){
-   var ssId = e.parameter.com_ssId;
-   var ss = SpreadsheetApp.openById(ssId);
-   var sh = ss.getSheetByName('gamemaster');
-   var lastRow = sh.getLastRow();
-   // 最古GameIDをgropumasterから取得
-   var range = sh.getRange(lastRow,1,1,1);
-   var gid = range.getValue();
-   var temp = HtmlService.createTemplateFromFile("tennis_input");
-   //新しいGameID（試合番号）を作成
-   var newgid = gid + 1;
-     
-   //シートをnewgidで追加
-   var sheetname = String( newgid );
-   var sheet = ss.insertSheet(sheetname);
-          
-   //日時を取得
-   var date = GetNow();
-     
-   // tennis_index_inputのFormから試合情報を取得
-   var setnum = e.parameter.sn;
-   var tiebk = e.parameter.tb;
-   var gamename = e.parameter.gamename;
-   var mem1 = e.parameter.mem1;
-   var mem2 = e.parameter.mem2;
-   var email = e.parameter.email
-     
-   // gamemasterに試合情報を登録
-   var gameinfo = [[gid+1,setnum,tiebk,gamename,mem1,mem2,date,email]];
-   sh.getRange(lastRow+1, 1,1,8).setValues(gameinfo);  
-     
-   //新規シートにSTATSエリア作成と初期値
-   var point_statsA = '=TRUNC((countif(N2:N10000,"A")/((countif(N2:N10000,"A"))+(countif(N2:N10000,"B")))),2)*100';
-   var point_statsB = '=100-S2';
-   var serve_statsA = '=TRUNC((1-(COUNTIF(E3:E10000,"F")+COUNTIF(E3:E10000,"DF"))/countif(C3:C10000,"A")),2)*100';
-   var serve_statsB = '=TRUNC((1-(COUNTIF(F3:F10000,"F")+COUNTIF(F3:F10000,"DF"))/countif(C3:C10000,"B")),2)*100';
-   var SA_statsA = '=countif(E2:E10000,"SA")+countif(E2:E10000,"2SA")';
-   var SA_statsB = '=countif(F2:F10000,"SA")+countif(F2:F10000,"2SA")';
-   var Win_statsA = '=countif(E2:E10000,"Win")';
-   var Win_statsB = '=countif(F2:F10000,"Win")';
-   var Ue_statsA = '=countif(E2:E10000,"Uer")';
-   var Ue_statsB = '=countif(F2:F10000,"Uer")';
-   var keep_statsA ='=countifs(C2:C10000,"=A",O2:O10000,"=K")';
-   var keep_statsB ='=countifs(C2:C10000,"=B",O2:O10000,"=K")';
-   var break_statsA ='=countifs(C2:C10000,"=A",O2:O10000,"=B")';
-   var break_statsB ='=countifs(C2:C10000,"=B",O2:O10000,"=B")';
-   var total_statsA ='=countif(N2:N10000,"A")';
-   var total_statsB ='=countif(N2:N10000,"B")';
-   
-   var setno = 1;
-   var gameno = 1;
-   var sh_gameinfo = [['SetNo','GameNo','Server','NextServer','PlayerA','PlayerB','ScoreA','ScoreB','GameA','GameB','SetA','SetB','Serve','Point','Keep/break','data','タイブレーク','勝利セット数'
-                      ,'Point%(A)','Point%(B)','Serve%(A)','Serve%(B)','SA（A）','SA（B）','Winners(A)','Winners(B)','Error(A)','Error(B)'
-                      ,'Keep(A)','Keep(B)','Break(A)','Break(B)','Total(A)','Total(B)']];
-   var sh =  ss.getSheetByName(sheetname);
-   sh.getRange(1,1,1,34).setValues(sh_gameinfo);
-   var sh_gameinint = [[setno,gameno,'A','A',mem1,mem2,0,0,0,0,0,0,'-','-','-',date,tiebk,setnum
-                       ,point_statsA,point_statsB,serve_statsA,serve_statsB,SA_statsA,SA_statsB,Win_statsA,Win_statsB,Ue_statsA,Ue_statsB
-                       ,keep_statsA,keep_statsB,break_statsA,break_statsB,total_statsA,total_statsB]];
-   sh.getRange(2,1,1,34).setValues(sh_gameinint);
-
-   //gameid,playerA,Bの情報をInputeTennisStatsへ     
-   temp.gameid = newgid;
-   temp.vgidnammehtml = gamename;
-   temp.playerA = mem1;
-   temp.playerB = mem2;
-   temp.setnum = setnum;
-   temp.com_ssId = ssId; 
-   temp.set_num = setnum;
-
-   return temp.evaluate().setTitle('InputTennisStats!').addMetaTag('viewport', 'width=device-width, initial-scale=1');     
- }
-  //Tennis試合観戦
-  else if(param == 'tennis_view'){
-    var ssId = e.parameter.com_ssId;
-    var ss = SpreadsheetApp.openById(ssId);
-    var sh = ss.getSheetByName('gamemaster');
-    var lastRow = sh.getLastRow();
-    // 最古GameIDをgropumasterから取得
-    var range = sh.getRange(lastRow,1,1,1);
-    var gid = range.getValue();
-    var temp = HtmlService.createTemplateFromFile("tennis_view");
-    var vgid = e.parameter.viewgid;
-    temp.gameid = vgid;
-    //IFされたGameIDのチェック
-    var dat = sh.getDataRange().getValues(); //受け取ったシートのデータを二次元配列に取得
-    var col = 1;
-    var val = Number(vgid);
-      for(var i=1;i<dat.length;i++){
-        if(dat[i][col-1] === val){
-          var vfgid =  i+1;//二次配列を検索して、行番号を入手（ただし、-1）
-        }
-      }
-    //該当するGameIDがない場合,tennis_view_errorを表示
-    if (vfgid === void 0){
-      var temp = HtmlService.createTemplateFromFile("tennis_view_error");//鑑賞のGameIDがない場合の処理見直しが必要（firebaseは企業ID画面のみ）
-      temp.com_ssId = ssId; 
-      return temp.evaluate().setTitle('ViewTennisStats!Error').addMetaTag('viewport', 'width=device-width, initial-scale=1');
-    }
-   //対象行を入手（二次配列）
-    var scoreAll = sh.getRange(vfgid,1,1,9).getValues();
-    //二次配列を一次配列
-    var scoreAllRow = scoreAll[0];
-    var vgameid = scoreAllRow[0];
-    var vgidname = scoreAllRow[3];
-    var vplayerA = scoreAllRow[4];
-    var vplayerB = scoreAllRow[5];   
-         
-    temp.vgidnammehtml = vgidname;
-    temp.playerA = vplayerA;
-    temp.playerB = vplayerB;
-    temp.com_ssId = ssId; 
-     
-    return temp.evaluate().setTitle('ViewTennisStats!').addMetaTag('viewport', 'width=device-width, initial-scale=1');
-  }
- //GrandGolf試合情報登録
- else if (param == 'gg_input'){
-   var ssId = e.parameter.com_ssId;
-   var ss = SpreadsheetApp.openById(ssId);
-   var sh = ss.getSheetByName('gamemaster');
-   var lastRow = sh.getLastRow();
-   // 最古GameIDをgropumasterから取得
-   var range = sh.getRange(lastRow,1,1,1);
-   var gid = range.getValue();
-   var newgid = gid + 1;   //新しいGameID（試合番号）を作成
-     
-   //シートをnewgidで追加
-   var sheetname = String( newgid );
-   var sheet = ss.insertSheet(sheetname);
-          
-   //日時を取得
-   var date = GetNow();
-     
-   // GG_index_inputのFormから試合情報を取得
-   var gamename = e.parameter.gamename;
-   var number = e.parameter.number;
-   var mem1 = e.parameter.mem1;
-   var mem2 = e.parameter.mem2;
-   var mem3 = e.parameter.mem3;
-   var mem4 = e.parameter.mem4;
-   var mem5 = e.parameter.mem5;
-   
-   // gamemasterに試合情報を登録
-   var gameinfo = [[newgid,gamename,number,mem1,mem2,mem3,mem4,mem5,date]];
-   sh.getRange(lastRow+1, 1,1,9).setValues(gameinfo);  
-   
-   var point_total_1 = '=sum(B5:B39)';
-   var point_total_2 = '=sum(C5:C39)';
-   var point_total_3 = '=sum(D5:D39)';
-   var point_total_4 = '=sum(E5:E39)';
-   var point_total_5 = '=sum(F5:F39)';
-   
-   var sh_gameinfo = [['Hole','選手1','選手2','選手3','選手4','選手5']];
-   var sh =  ss.getSheetByName(sheetname);
-   sh.getRange(1,1,1,6).setValues(sh_gameinfo);
-   var sh_gameinint = [['Total',point_total_1,point_total_2,point_total_3,point_total_4,point_total_5]];
-   sh.getRange(2,1,1,6).setValues(sh_gameinint);
-   var sh_gameinint = [['Average','','','','','',]];
-   sh.getRange(3,1,1,6).setValues(sh_gameinint);
-   var sh_gameinint = [['1',mem1,mem2,mem3,mem4,mem5]];
-   sh.getRange(4,1,1,6).setValues(sh_gameinint);
-                       
-   //gameid,playerA,Bの情報をindexへ
-   var temp = HtmlService.createTemplateFromFile("GrandGolf_input");
-
-   temp.gameid = newgid;
-   temp.game_name = gamename;
-   temp.player1 = mem1;
-   temp.player2 = mem2;
-   temp.player3 = mem3;
-   temp.player4 = mem4;
-   temp.player5 = mem5;
-   temp.com_ssId = ssId; 
-   
-   return temp.evaluate().setTitle('ViewGrandGolfStats!').addMetaTag('viewport', 'width=device-width, initial-scale=1');
- }
-//★メール認証が完了したあとの初期アクセス先（テニスとGrandgolf版）
-  else if (param == 'js_index'){
-   var email = e.parameter.email;
-   var name = e.parameter.name;
-   var temp = HtmlService.createTemplateFromFile("main_input");
-   temp.name = name;
-   temp.email = email;
-   return temp.evaluate().setTitle('main_input').addMetaTag('viewport', 'width=device-width, initial-scale=1');
-  }
-//★メール認証が完了したあとの初期アクセス先（Grandgolfのみ版）  
-  else if (param == 'gg_index'){
+//メールアドレス認証後のGroundGolfメイン画面へ
+if (param == 'gg_index'){
    var email = e.parameter.email;
    var name = e.parameter.name;
    var temp = HtmlService.createTemplateFromFile("GG_main_input.html");
    temp.name = name;
    temp.email = email;
-   return temp.evaluate().setTitle('GrandGolf_GameInfo_Input').addMetaTag('viewport', 'width=device-width, initial-scale=1');
-  }  
-  
+   return temp.evaluate().setTitle('GrandGolf_GameInfo_Input').addMetaTag('viewport', 'width=device-width, initial-scale=1')
+   .setFaviconUrl('https://drive.google.com/uc?id=1rvttJYokHuEnkGCEcwWWeOK7IEo3kVVc&.png');
+;
+}  
   
 //★GroundGolf問い合わせ登録    
 else if(param == 'ggqa'){
-　　//lisence_masterのファイルからそのLisence情報を取得
-    console.log('param new ');
     var ssId = '1MNwt8lV_81EEwfU0m6Qb4tMuEv38RxGKF8qshhBBLy8';//GroundGolf_QAのファイル
     var ss = SpreadsheetApp.openById(ssId);
     var name = e.parameter.name;
-    var email = e.parameter.email;//indexからcompany_id取得
-    var message = e.parameter.message;//indexからcompany_pw取得
+    var email = e.parameter.email;
+    var message = e.parameter.message;
     var date = GetNow();
     var sh = ss.getSheetByName('2020');
     var lastRow = sh.getLastRow();
     var new_qa = [[name,email,message,date]];
     console.log(new_qa);
     sh.getRange(lastRow+1,1,1,4).setValues(new_qa);
-/*
+    var temp = HtmlService.createTemplateFromFile("ggqa_result");
+    return temp.evaluate().setTitle('問い合わせ完了').addMetaTag('viewport', 'width=device-width, initial-scale=1')
+    .setFaviconUrl('https://drive.google.com/uc?id=1rvttJYokHuEnkGCEcwWWeOK7IEo3kVVc&.png');
+
+  
+
+ /*slack通知
     var text = '' + '_企業名：'+ new_company_name + '_担当者：' +new_person;
     const post_url = 'https://hooks.slack.com/services/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';
     const user_name = 'StatsMe';
@@ -325,15 +52,158 @@ else if(param == 'ggqa'){
     return temp.evaluate().setTitle('申込完了').addMetaTag('viewport', 'width=device-width, initial-scale=1');
 */
 }//GroundGolf問い合わせ（param = ggqa)の終わり  
+
   
-  
-  
+ //GrandGolf試合情報登録
+ else if (param == 'gg_input'){
+   var ssId = '1tuBaA_yE9fQgojqtp4Mzj-R0gvr0-4-6WjJZyeh6hX8';//GroundGolf_Score_2020_01
+   var ss = SpreadsheetApp.openById(ssId);
+   var sh = ss.getSheetByName('gamemaster');
+   var lastRow = sh.getLastRow();
+   // 最古GameIDをgropumasterから取得
+   var range = sh.getRange(lastRow,1,1,1);
+   var gid = range.getValue();
+   var newgid = gid + 1;   //新しいGameID（試合番号）を作成
+     
+   //シートをnewgidで追加
+   var sheetname = String( newgid );
+   var sheet = ss.insertSheet(sheetname);
+          
+   //日時を取得
+   var date = GetNow();
+     
+   // GG_mail_inputのFormから試合情報を取得
+   var gamename = e.parameter.gamename;
+   var starthole = e.parameter.starthole;
+   var coursename =e.parameter.coursename;
+   var mem1 = e.parameter.mem1;
+   var mem2 = e.parameter.mem2;
+   var mem3 = e.parameter.mem3;
+   var mem4 = e.parameter.mem4;
+   var mem5 = e.parameter.mem5;
+   var mem6 = e.parameter.mem6;
+   var mem7 = e.parameter.mem7;
+   var mem8 = e.parameter.mem8;
+   var email = e.parameter.email;
+   
+   
+   // gamemasterに試合情報を登録
+   var gameinfo = [[newgid,gamename,starthole,coursename,mem1,mem2,mem3,mem4,mem5,mem6,mem7,mem8,date,email]];
+   sh.getRange(lastRow+1, 1,1,14).setValues(gameinfo);  
+   
+   var point_total_1 = '=sum(B6:B39)';
+   var point_total_2 = '=sum(C6:C39)';
+   var point_total_3 = '=sum(D6:D39)';
+   var point_total_4 = '=sum(E6:E39)';
+   var point_total_5 = '=sum(F6:F39)';
+   var point_total_6 = '=sum(G6:G39)';
+   var point_total_7 = '=sum(H6:H39)';
+   var point_total_8 = '=sum(I6:I39)';
+   
+   var point_ave_1 = '=average(B6:B39)';
+   var point_ave_2 = '=average(C6:C39)';
+   var point_ave_3 = '=average(D6:D39)';
+   var point_ave_4 = '=average(E6:E39)';
+   var point_ave_5 = '=average(F6:F39)';
+   var point_ave_6 = '=average(G6:G39)';
+   var point_ave_7 = '=average(H6:H39)';
+   var point_ave_8 = '=average(I6:I39)';
+   
+   var count_1_1 = '=countif(B6:B39,"1")';
+   var count_1_2 = '=countif(C6:C39,"1")';
+   var count_1_3 = '=countif(D6:D39,"1")';
+   var count_1_4 = '=countif(E6:E39,"1")';
+   var count_1_5 = '=countif(F6:F39,"1")';
+   var count_1_6 = '=countif(G6:G39,"1")';
+   var count_1_7 = '=countif(H6:H39,"1")';
+   var count_1_8 = '=countif(I6:I39,"1")';
+   
+   
+   
+   var sh_gameinfo = [['Hole','選手1','選手2','選手3','選手4','選手5','選手6','選手7','選手8','日時']];
+   var sh =  ss.getSheetByName(sheetname);
+   sh.getRange(1,1,1,10).setValues(sh_gameinfo);
+   var sh_gameinint = [['Total',point_total_1,point_total_2,point_total_3,point_total_4,point_total_5,point_total_6,point_total_7,point_total_8]];
+   sh.getRange(2,1,1,9).setValues(sh_gameinint);
+   
+   var sh_gameinint2 = [['Average',point_ave_1,point_ave_2,point_ave_3,point_ave_4,point_ave_5,point_ave_6,point_ave_7,point_ave_8]];//計算未
+   sh.getRange(3,1,1,9).setValues(sh_gameinint2);
+   
+   var sh_gameinint3 = [['1打回数',count_1_1,count_1_2,count_1_3,count_1_4,count_1_5,count_1_6,count_1_7,count_1_8]];//計算未
+   sh.getRange(4,1,1,9).setValues(sh_gameinint3);
+
+   var sh_gameinint = [['0',mem1,mem2,mem3,mem4,mem5,mem6,mem7,mem8,'コース長']];
+   sh.getRange(5,1,1,10).setValues(sh_gameinint);
+                       
+   //gameid,player情報をindexへ
+   var temp = HtmlService.createTemplateFromFile("GrandGolf_input");
+
+   temp.gameid = newgid;
+   temp.game_name = gamename;
+   temp.com_ssId = '1tuBaA_yE9fQgojqtp4Mzj-R0gvr0-4-6WjJZyeh6hX8';
+   temp.player1 = mem1;
+   temp.player2 = mem2;
+   temp.player3 = mem3;
+   temp.player4 = mem4;
+   temp.player5 = mem5;
+   temp.player6 = mem6;
+   temp.player7 = mem7;
+   temp.player8 = mem8;
+   temp.com_ssId = ssId;
+   temp.starthole = starthole;
+   
+   return temp.evaluate().setTitle('GrandGolfInputStats!').addMetaTag('viewport', 'width=device-width, initial-scale=1')
+   .setFaviconUrl('https://drive.google.com/uc?id=1rvttJYokHuEnkGCEcwWWeOK7IEo3kVVc&.png');
+ }    
 }//doPost終了
 
 
 //★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★
 //★★★★★★★★★★★★★　　関数群　　★★★★★★★★★★★★★★★★
 //★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★
+
+
+
+//●GGスコア記録
+function GG_PointInput(sheetname,hole,h_len,sr1,sr2,sr3,sr4,sr5,sr6,sr7,sr8){
+  console.log('GGpoint_input');
+  console.log('GGpoint_input'+sr8);
+  var ssId = '1tuBaA_yE9fQgojqtp4Mzj-R0gvr0-4-6WjJZyeh6hX8';
+  var ss = SpreadsheetApp.openById(ssId);
+  var sh = ss.getSheetByName(sheetname);
+  var last_row = sh.getLastRow();
+ // var range = sh.getRange(last_row,1,1,1);
+ // var hole = range.getValue();
+  console.log('hole '+hole);
+  var last_score = [[hole,sr1,sr2,sr3,sr4,sr5,sr6,sr7,sr8,h_len]];
+  console.log(last_score);
+  sh.getRange(last_row+1, 1,1,10).setValues(last_score);
+  var hole = Number(hole);
+  console.log('hole2 ' + hole);  
+  var hole = hole + 1;
+  console.log('hole3 ' + hole);
+  return hole;
+}
+
+//●GGTotalScore入手
+function GG_point_stats(sheetname,ssId){
+  Utilities.sleep(2000);//最新データが書き込まれるのWait（←本当はさけたい）
+  var ssId = ssId;
+  var ss = SpreadsheetApp.openById(ssId);
+  var sh = ss.getSheetByName(sheetname);
+  var last_row = sh.getLastRow();
+  var range = sh.getRange(last_row,2,1,5);
+  var total_score = range.getValues();
+  return total_score;
+}
+
+
+//★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★
+//★★★★★★★★★★★★★　　テニス？　　★★★★★★★★★★★★★★★★
+//★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★
+
+
+
 
 //★★★　ポイント処理　★★★※まず各値入手タイブレと通常の分岐
 function PointInput(sheetName,st1,st2,point,sside,ssId) {
@@ -841,30 +711,6 @@ function get_setnum(game,vs_game,set,vs_set,setnum,point){
   //return [set];
 }
 
-//●GGスコア記録
-function GG_PointInput(sheetname,ssId,sr1,sr2,sr3,sr4,sr5){
-  var ssId = ssId;
-  var ss = SpreadsheetApp.openById(ssId);
-  var sh = ss.getSheetByName(sheetname);
-  var last_row = sh.getLastRow();
-  var range = sh.getRange(last_row,1,1,1);
-  var hole = range.getValue();
-  var hole = hole + 1;
-  var last_score = [[hole,sr1,sr2,sr3,sr4,sr5]];
-  sh.getRange(last_row+1, 1,1,6).setValues(last_score);  
-  return hole;
-}
-
-//●GGTotalScore入手
-function GG_point_stats(sheetname,ssId){
-  Utilities.sleep(2000);//最新データが書き込まれるのWait（←本当はさけたい）
-  var ssId = ssId;
-  var ss = SpreadsheetApp.openById(ssId);
-  var sh = ss.getSheetByName(sheetname);
-  var range = sh.getRange(2,2,1,5);
-  var total_score = range.getValues();
-  return total_score;
-}
 
 
 //●対象シートのcsvダウンロード用URL取得

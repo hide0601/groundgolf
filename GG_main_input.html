@@ -8,9 +8,11 @@
     <meta name="description" content="Personal Stas">
     <meta name="viewport" content="width=device-width">
     <title>グランドゴルフ試合情報</title>
+    <!--
     <link rel="stylesheet" media="all" href="css/style_test.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js"></script>
     <script src="js/script.js"></script>
+    -->
     <link href="https://fonts.googleapis.com/css?family=Noto+Sans+JP:400,700&display=swap&subset=japanese" rel="stylesheet">
 </head>
 
@@ -27,21 +29,26 @@
       </header>
       <div class="event" font face="Noto Sans JP">
       <div class="kakomi-maru3" >グランドゴルフの試合情報を入力</div>
-      <form method="post" action="https://script.google.com/macros/s/AKfycbxvGGpIC6ZsJEnI5c5V0e6-hRX2oVhqf5iRRGjI2jZsatLHPMsB/exec?param=gg_input" accept-charset="utf-8">
+      <form method="post" action="https://script.google.com/macros/s/AKfycbzQaXKek7UwUiJLF5X01vWgsMsYy2l3PF4L1f-loHmXEmZ0pj4/exec?param=gg_input" accept-charset="utf-8">
         <div class = "h_web_font">
-          <label>試合名　：<input type="text" name="gamename" maxlength="10"placeholder="10文字以内"></label><br>
-          <label>人數　　：<input type="number" name="number" placeholder="人数"></label><br>
+          <label>大会名　：<input type="text" name="gamename" maxlength="10"placeholder="10文字以内"></label><br>
+          <label>コース名：<input type="text" name="coursename" maxlength="10"placeholder="10文字以内"></label><br>
+          <label>スタートホール：<input type="number" name="starthole" placeholder="ホール"></label><br>
           <label>選手名１：<input type="text" name="mem1"maxlength="10"placeholder="10文字以内"></label><br>
           <label>選手名２：<input type="text" name="mem2"maxlength="10"placeholder="10文字以内"></label><br>
           <label>選手名３：<input type="text" name="mem3"maxlength="10"placeholder="10文字以内"></label><br>
           <label>選手名４：<input type="text" name="mem4"maxlength="10"placeholder="10文字以内"></label><br>
           <label>選手名５：<input type="text" name="mem5"maxlength="10"placeholder="10文字以内"></label><br>
-          <input type="hidden" name="com_ssId" value= "1Iu034AQeLws5UY-mJu1Wod8XFHbcLslls3F0QYd7J8o">
+          <label>選手名６：<input type="text" name="mem6"maxlength="10"placeholder="10文字以内"></label><br>
+          <label>選手名７：<input type="text" name="mem7"maxlength="10"placeholder="10文字以内"></label><br>
+          <label>選手名８：<input type="text" name="mem8"maxlength="10"placeholder="10文字以内"></label><br>
+          <input type="hidden" name="email" value= "<?=email?>">
           <input type="submit" class = "form_button" value="送信する"><br><br><hr>
         </div>
       </form>
+      
       <div class="kakomi-maru3">グランドゴルフの試合を観戦</div><br>
-      <form method="post" action="https://script.google.com/macros/s/AKfycbxvGGpIC6ZsJEnI5c5V0e6-hRX2oVhqf5iRRGjI2jZsatLHPMsB/exec?param=gg_view" accept-charset="utf-8">   
+      <form method="post" action="https://script.google.com/macros/s/AKfycbzQaXKek7UwUiJLF5X01vWgsMsYy2l3PF4L1f-loHmXEmZ0pj4/exec?param=gg_view" accept-charset="utf-8">   
         <div class = "h_web_font">
           <label>試合番号：<input type="number" name="viewgid"></label><br><br>
           <input type="hidden" name="com_ssId" value= "1Iu034AQeLws5UY-mJu1Wod8XFHbcLslls3F0QYd7J8o"><!--当初企業ごとシートのため、シートIDを埋め込みで渡している-->
