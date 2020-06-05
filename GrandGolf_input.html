@@ -43,7 +43,7 @@
   -->
   
 
-    <h5>コース長</h5>
+    長さ:
     <number-input size="small" v-model="h_len" :min="10" :max="100" :step="10" inline center controls ></number-input><br>
     
     <h5>Score</h5>
@@ -52,20 +52,39 @@
 
     <?=player1 ?>:
     <number-input size="small" v-model="sr1" :min="1" :max="20" inline center controls ></number-input><br>
+    
     <?=player2 ?>:
     <number-input size="small" v-model="sr2" :min="1" :max="20" inline center controls ></number-input><br>
-    <?=player3 ?>:
-    <number-input size="small" v-model="sr3" :min="1" :max="20" inline center controls ></number-input><br>
-    <?=player4 ?>:
-    <number-input size="small" v-model="sr4" :min="1" :max="20" inline center controls ></number-input><br>
-    <?=player5 ?>:
-    <number-input size="small" v-model="sr5" :min="1" :max="20" inline center controls ></number-input><br>
-    <?=player6 ?>:
-    <number-input size="small" v-model="sr6" :min="1" :max="20" inline center controls ></number-input><br>
-    <?=player7 ?>:
-    <number-input size="small" v-model="sr7" :min="1" :max="20" inline center controls ></number-input><br>
-    <?=player8 ?>:
-    <number-input size="small" v-model="sr8" :min="1" :max="20" inline center controls ></number-input><br>
+    
+    <template v-if="showP3">    
+      <?=player3 ?>:
+      <number-input size="small" v-model="sr3" :min="1" :max="20" inline center controls ></number-input><br>
+    </template>
+    
+    <template v-if="showP4">
+      <?=player4 ?>:
+      <number-input size="small" v-model="sr4" :min="1" :max="20" inline center controls ></number-input><br>
+    </template>
+    
+    <template v-if="showP5">    
+      <?=player5 ?>:
+      <number-input size="small" v-model="sr5" :min="1" :max="20" inline center controls ></number-input><br>
+    </template>
+    
+    <template v-if="showP6">
+      <?=player6 ?>:
+      <number-input size="small" v-model="sr6" :min="1" :max="20" inline center controls ></number-input><br>
+    </template>
+    
+    <template v-if="showP7">
+      <?=player7 ?>:
+      <number-input size="small" v-model="sr7" :min="1" :max="20" inline center controls ></number-input><br>
+    </template>
+    
+    <template v-if="showP8">
+      <?=player8 ?>:
+      <number-input size="small" v-model="sr8" :min="1" :max="20" inline center controls ></number-input><br>
+    </template>
 
 
     <button class="button1" @click="put_score(<?=gameid ?>,hole,h_len,sr1,sr2,sr3,sr4,sr5,sr6,sr7,sr8);get_graff(<?=gameid ?>,'<?=com_ssId?>')" >データ更新</button>
@@ -86,6 +105,7 @@ var vm = new Vue({
   el: '#app',
     data: {
       hole:<?=starthole ?>,
+      mem_amount:　null,
       h_len: '',
       sr1: '',
       sr2: '',
@@ -95,6 +115,12 @@ var vm = new Vue({
       sr6: '',
       sr7: '',
       sr8: '',
+      showP3:true,
+      showP4:true,
+      showP5:true,
+      showP6:true,
+      showP7:true,
+      showP8:true,
       ps_data:[],
   },
   methods: {
@@ -123,6 +149,10 @@ var vm = new Vue({
       this.sr3 = '';
       this.sr4 = '';
       this.sr5 = '';
+      this.sr6 = '';
+      this.sr7 = '';
+      this.sr8 = '';
+
       },
       getSheetData: function(sheetname,ssId) {
         console.log('sheetname2: ' + sheetname);
@@ -157,14 +187,49 @@ var vm = new Vue({
     },
 },//method終わり
 
+//★できていない
+mounted:function(){
+  var showP3 = "";
+  var showP4 = "";
+  var showP5 = "";
+  var showP6 = "";
+  var showP7 = "";
+  var showP8 = "";
 
-//  export default {
-//    data() {
-//      return {
-//        value: 1,
-//      };
-//    },
-//  };
+  if(<?=mem_amount?> == "2"){
+    this.showP3 = false;
+    this.showP4 = false;
+    this.showP5 = false;
+    this.showP6 = false;
+    this.showP7 = false;
+    this.showP8 = false;
+  }
+  else if(<?=mem_amount?> == "3"){
+    this.showP4 = false;
+    this.showP5 = false;
+    this.showP6 = false;
+    this.showP7 = false;
+    this.showP8 = false;
+  }
+  else if(<?=mem_amount?> == "4"){
+    this.showP5 = false;
+    this.showP6 = false;
+    this.showP7 = false;
+    this.showP8 = false;
+  }  
+  else if(<?=mem_amount?> == "5"){
+    this.showP6 = false;
+    this.showP7 = false;
+    this.showP8 = false;
+  }  
+  else if(<?=mem_amount?> == "6"){
+    this.showP7 = false;
+    this.showP8 = false;
+  }  
+  else if(<?=mem_amount?> == "7"){
+    this.showP8 = false;
+  }
+},//moutedの終わり
 
 
 

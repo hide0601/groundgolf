@@ -158,6 +158,7 @@ else if(param == 'ggqa'){
    temp.player7 = mem7;
    temp.player8 = mem8;
    temp.com_ssId = ssId;
+   temp.mem_amount = mem_amount;
    temp.starthole = starthole;
    
    return temp.evaluate().setTitle('GrandGolfInputStats!').addMetaTag('viewport', 'width=device-width, initial-scale=1')
