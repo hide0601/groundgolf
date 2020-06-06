@@ -26,11 +26,16 @@ else if(param == 'ggqa'){
     var new_qa = [[name,email,message,date]];
     console.log(new_qa);
     sh.getRange(lastRow+1,1,1,4).setValues(new_qa);
+  
+  //gmail送信
+    var mail_title = 'GroundGolfClub問い合わせ：' + name;
+    GmailApp.sendEmail('statsme.club@gmail.com',mail_title,message);
+    console.log(mail_title);
+  
     var temp = HtmlService.createTemplateFromFile("ggqa_result");
     return temp.evaluate().setTitle('問い合わせ完了').addMetaTag('viewport', 'width=device-width, initial-scale=1')
     .setFaviconUrl('https://drive.google.com/uc?id=1rvttJYokHuEnkGCEcwWWeOK7IEo3kVVc&.png');
 
-  
 
  /*slack通知
     var text = '' + '_企業名：'+ new_company_name + '_担当者：' +new_person;
@@ -51,6 +56,7 @@ else if(param == 'ggqa'){
     var temp = HtmlService.createTemplateFromFile("application_reslut");
     return temp.evaluate().setTitle('申込完了').addMetaTag('viewport', 'width=device-width, initial-scale=1');
 */
+  
 }//GroundGolf問い合わせ（param = ggqa)の終わり  
 
   
@@ -149,6 +155,7 @@ else if(param == 'ggqa'){
    temp.gameid = newgid;
    temp.game_name = gamename;
    temp.com_ssId = '1tuBaA_yE9fQgojqtp4Mzj-R0gvr0-4-6WjJZyeh6hX8';
+   temp.course_name = coursename;
    temp.player1 = mem1;
    temp.player2 = mem2;
    temp.player3 = mem3;

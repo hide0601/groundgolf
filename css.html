@@ -1,6 +1,10 @@
 <style>
 
-div { text-align : center ; }
+h4{
+  text-align : center ;
+  position: relative;
+  font-family: 'Noto Sans JP', sans-serif;
+}
 
 .button1 {
   display       : inline-block;
@@ -238,10 +242,13 @@ p.ff_kosugi_blue {
 #table05 th,#table05 td {
   font-family: 'Noto Sans JP', sans-serif;
   font-size:10pt;
-  margin-right:auto;
+/*  margin-right:auto; */
   padding: 5px;
   border-collapse: collapse; 
   width: auto;
+  text-align:center;
+  margin-left:auto;
+  margin-right:auto;
 }
 #table05 thead th {
   width: 300px;
@@ -249,43 +256,22 @@ p.ff_kosugi_blue {
   color: #fff;
   border: 0px none;
 }
-#table05 thead th.playerA {
+#table05 tbody td.length {
   width: 300px;
-  background: #ffec64;
-  color: #01000a;
-  border: 0px none;
-}
-#table05 thead th.playerB {
-  width: 300px;
-  background: #3d94f6;
-  color: #ffffff;
+  background: #FFFFFF;
+  color: #FF6699;
   border: 0px none;
 }
 #table05 tbody th {
   width: 300px;
-  background: #5e9bcc;
+  background: #FFFFFF;
   color: #fff;
-  font-weight: 400;
-}
-#table05 tbody th.player  {
-  width: 300px;
-  background: #c6c4f2;
-  color: #2615bd;
   font-weight: 400;
 }
 #table05 tbody td {
   width: 300px;
-  background: #c4d8f2;
-}
-#table05 tbody td.playerA {
-  width: 300px;
-  color:#01000a;
-  background: #ffec64;
-}
-#table05 tbody td.playerB {
-  width: 300px;
-  color:#ffffff;
-  background: #3d94f6;
+  background: #FFFFFF;
+  color: #0033FF;
 }
 
 
@@ -293,6 +279,7 @@ p.ff_kosugi_blue {
 .parent {
  width: 50%;
  display: flex;
+　text-align:center;
 }
 
 h_left{
@@ -358,32 +345,16 @@ h_left{
   color: #999;
 }
 
-
-.btnspinner{
-    -ms-user-select: none;
-    -moz-user-select: -moz-none;
-    -khtml-user-select: none;
-    -webkit-user-select: none;
-    user-select: none;
+.title1 {
+  font-size: １２px;/*文字サイズ*/
+  text-align: center;
+  font-weight: bold;/*文字の太さ*/
+  padding: 0.5rem 1rem 0.5rem 1rem;/*要素内余白*/
+  margin-top: 0.5rem;/*要素外余白*/
+  margin-bottom: 0.5rem;/*要素外余白*/
+  border: 1px solid #555;/*下線*/
+  border-radius: 6px;/*角丸の度合い*/
 }
-
-.spinner_area input{
-    padding: 11px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    font-size: 18px;
-    width: auto;
-    vertical-align: middle;
-    /* デフォルトのスピナーを消す */
-    -webkit-appearance: none;
-    -moz-appearance:textfield;
-}
-
-.spinner_area input[type="button"]{
-    cursor: pointer;
-}
-
-
 
 </style>
 

@@ -4,90 +4,124 @@
 <head>
   <?!= HtmlService.createHtmlOutputFromFile('css').getContent(); ?>
   <link href="https://fonts.googleapis.com/css?family=Noto+Sans+JP:400,700&display=swap&subset=japanese" rel="stylesheet">
-
 </head>
 
 <body>
   <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0/dist/Chart.min.js"></script>
-  
-  <!--
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>  
-  -->
-  
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0/dist/Chart.min.js"></script>   
   <script src="https://cdn.jsdelivr.net/npm/@chenfengyuan/vue-number-input@1.2.1/dist/vue-number-input.min.js"></script>
-  
 
+  <!-- Vue -->
   <div class="block" id="app">
+    <h2 title="GAME No.<?=gameid ?>">大会名:<?=game_name ?>( <?=course_name ?>コース）</h2>
+    
+    <div class="title1" > Hole {{ hole }}</div>
 
-    <h4>大会名.<?=game_name ?>(ID:<?=gameid ?>)</h4>
-    <h4>Hole {{ hole }}</h4>
-
-    <div class="parent">
-      <div>
-  <!-- オーソドックスな数字入力
-    <label for="sr1"><?=player1 ?>：</label>
-    <input type="text" v-model="sr1"number><br>
-    
-    <label for="sr2"><?=player2 ?>：</label>
-    <input type="text" v-model="sr2"number><br>
-    
-    <label for="sr3"><?=player3 ?>：</label>
-    <input type="text" v-model="sr3"number><br>
-    
-    <label for="sr4"><?=player4 ?>：</label>
-    <input type="text" v-model="sr4"number><br>
-    
-    <label for="sr5"><?=player5 ?>：</label>
-    <input type="text" v-model="sr5"number><br>
-  -->
+    <div>
+    <!-- オーソドックスな数字入力
+      <label for="sr1"><?=player1 ?>：</label>
+      <input type="text" v-model="sr1"number><br>
+      <label for="sr2"><?=player2 ?>：</label>
+      <input type="text" v-model="sr2"number><br>
+    -->
   
+    <table id = "table05" align="center">
+      <tbody>
+        <tr>
+          <td class = "length">
+           コース長
+          </td>
+          <td>
+            <number-input size="small" v-model="h_len" :min="10" :max="100" :step="10" inline center controls ></number-input><br>
+          </td>
+        <tr>
+          <td>
+            <?=player1 ?>
+          </td>
+          <td>
+            <number-input size="small" v-model="sr1" :min="1" :max="20" inline center controls ></number-input>
+          </td>
+        </tr>
+        <tr>
+          <td>
+           <?=player2 ?>
+          </td>
+          <td>
+            <number-input size="small" v-model="sr2" :min="1" :max="20" inline center controls ></number-input>
+          </td>
+        </tr>
+        
+        <template v-if="showP3">    
+        <tr>
+          <td>
+            <?=player3 ?>
+          </td>
+          <td>
+            <number-input size="small" v-model="sr3" :min="1" :max="20" inline center controls ></number-input><br>
+          </td>
+        </tr>
+        </template>
+        
+        <template v-if="showP4">
+        <tr>
+          <td>
+            <?=player4 ?>
+          </td>
+          <td>
+            <number-input size="small" v-model="sr4" :min="1" :max="20" inline center controls ></number-input><br>
+          </td>
+        </tr>
+        </template>
+    
+        <template v-if="showP5">
+        <tr>
+          <td>
+            <?=player5 ?>
+          </td>
+          <td>
+            <number-input size="small" v-model="sr5" :min="1" :max="20" inline center controls ></number-input><br>
+          </td>
+        </tr>
+        </template>
 
-    長さ:
-    <number-input size="small" v-model="h_len" :min="10" :max="100" :step="10" inline center controls ></number-input><br>
-    
-    <h5>Score</h5>
+        <template v-if="showP6">
+        <tr>
+          <td>
+            <?=player6 ?>
+          </td>
+          <td>
+            <number-input size="small" v-model="sr6" :min="1" :max="20" inline center controls ></number-input><br>
+          </td>
+        </tr>
+        </template>
+        
+        <template v-if="showP7">
+        <tr>
+          <td>
+            <?=player7 ?>
+          </td>
+          <td>
+            <number-input size="small" v-model="sr7" :min="1" :max="20" inline center controls ></number-input><br>
+          </td>
+        </tr>
+        </template>
 
+        <template v-if="showP8">
+        <tr>
+          <td>
+            <?=player8 ?>
+          </td>
+          <td>
+            <number-input size="small" v-model="sr8" :min="1" :max="20" inline center controls ></number-input><br>
+          </td>
+        </tr>
+        </template>
+      </tbody>
+    </table>
 
-
-    <?=player1 ?>:
-    <number-input size="small" v-model="sr1" :min="1" :max="20" inline center controls ></number-input><br>
-    
-    <?=player2 ?>:
-    <number-input size="small" v-model="sr2" :min="1" :max="20" inline center controls ></number-input><br>
-    
-    <template v-if="showP3">    
-      <?=player3 ?>:
-      <number-input size="small" v-model="sr3" :min="1" :max="20" inline center controls ></number-input><br>
-    </template>
-    
-    <template v-if="showP4">
-      <?=player4 ?>:
-      <number-input size="small" v-model="sr4" :min="1" :max="20" inline center controls ></number-input><br>
-    </template>
-    
-    <template v-if="showP5">    
-      <?=player5 ?>:
-      <number-input size="small" v-model="sr5" :min="1" :max="20" inline center controls ></number-input><br>
-    </template>
-    
-    <template v-if="showP6">
-      <?=player6 ?>:
-      <number-input size="small" v-model="sr6" :min="1" :max="20" inline center controls ></number-input><br>
-    </template>
-    
-    <template v-if="showP7">
-      <?=player7 ?>:
-      <number-input size="small" v-model="sr7" :min="1" :max="20" inline center controls ></number-input><br>
-    </template>
-    
-    <template v-if="showP8">
-      <?=player8 ?>:
-      <number-input size="small" v-model="sr8" :min="1" :max="20" inline center controls ></number-input><br>
-    </template>
-
-
-    <button class="button1" @click="put_score(<?=gameid ?>,hole,h_len,sr1,sr2,sr3,sr4,sr5,sr6,sr7,sr8);get_graff(<?=gameid ?>,'<?=com_ssId?>')" >データ更新</button>
+    <center>
+    <button class="button3" @click="put_score(<?=gameid ?>,hole,h_len,sr1,sr2,sr3,sr4,sr5,sr6,sr7,sr8);get_graff(<?=gameid ?>,'<?=com_ssId?>')" >データ更新</button>
+    </center>
  
         <div class="chart-container" style="position: relative; width:100%; height:100%">
           <p><canvas id="myChart_total_stats"></canvas>
