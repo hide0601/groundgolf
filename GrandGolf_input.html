@@ -13,9 +13,10 @@
 
   <!-- Vue -->
   <div class="block" id="app">
-    <h2 title="GAME No.<?=gameid ?>">大会名:<?=game_name ?>( <?=course_name ?>コース）</h2>
-    
-    <div class="title1" > Hole {{ hole }}</div>
+    <center>
+      <h2 title="GAME No.<?=gameid ?>">大会名:<?=game_name ?>( <?=course_name ?>コース）</h2>
+      <div class="title1" > Hole {{ hole }}</div>
+    </center>
 
     <div>
     <!-- オーソドックスな数字入力
@@ -34,6 +35,12 @@
           <td>
             <number-input size="small" v-model="h_len" :min="10" :max="100" :step="10" inline center controls ></number-input><br>
           </td>
+        </tr>
+      </tbody>
+    </table>
+    <hr>
+    <table id = "table05" align="center">
+      <tbody>
         <tr>
           <td>
             <?=player1 ?>
