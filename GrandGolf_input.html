@@ -15,15 +15,15 @@
   <div class="block" id="app">
     <center>
       <h2 title="GAME No.<?=gameid ?>">大会名:<?=game_name ?>( <?=course_name ?>コース）</h2>
+    </center>
+  <template v-if="showAll">
+    <center>
       <div class="title1" > Hole {{ hole }}</div>
     </center>
-
-    <div>
+    <!--<div> -->
     <!-- オーソドックスな数字入力
       <label for="sr1"><?=player1 ?>：</label>
       <input type="text" v-model="sr1"number><br>
-      <label for="sr2"><?=player2 ?>：</label>
-      <input type="text" v-model="sr2"number><br>
     -->
   
     <table id = "table05" align="center">
@@ -33,7 +33,7 @@
            コース長
           </td>
           <td>
-            <number-input size="small" v-model="h_len" :min="10" :max="100" :step="10" inline center controls ></number-input><br>
+            <number-input size="small" v-model="h_len" :min="10" :max="100" :step="5" inline center controls ></number-input><br>
           </td>
         </tr>
       </tbody>
@@ -127,15 +127,17 @@
     </table>
 
     <center>
-    <button class="button3" @click="put_score(<?=gameid ?>,hole,h_len,sr1,sr2,sr3,sr4,sr5,sr6,sr7,sr8);get_graff(<?=gameid ?>,'<?=com_ssId?>')" >データ更新</button>
+    <button class="button3" @click="put_score(<?=gameid ?>,hole,h_len,sr1,sr2,sr3,sr4,sr5,sr6,sr7,sr8,<?=mem_amount?>);get_graff(<?=gameid ?>,'<?=com_ssId?>')" >データ更新</button>
     </center>
  
         <div class="chart-container" style="position: relative; width:100%; height:100%">
           <p><canvas id="myChart_total_stats"></canvas>
         </div>
-
-      </div>
-    </div><!--parent-->
+  </template>
+  <template v-if="showFin">
+    <h4>Fin</h4>
+  </template>
+  <!-- vue -->
   </div>
 
 
@@ -162,22 +164,27 @@ var vm = new Vue({
       showP6:true,
       showP7:true,
       showP8:true,
+      showAll:true,
+      showFin:false,
       ps_data:[],
   },
   methods: {
-    put_score: function (sheetname,hole,h_len,sr1,sr2,sr3,sr4,sr5,sr6,sr7,sr8) {
+    put_score: function (sheetname,hole,h_len,sr1,sr2,sr3,sr4,sr5,sr6,sr7,sr8,men_amount) {
     console.log(sheetname,sr1);
     google.script.run
           .withSuccessHandler(function (data) {
           // GAS正常終了時の処理
-            console.log('正常　取得したデータ: ' + data);
+            console.log('取得データ: ' + data);
             vm.hole=data;
+            if(data == 0){
+              vm.showAll = false;
+              vm.showFin = true;
+            }
           })
           .withFailureHandler(function (data) {
           // GASエラー時の処理
-            console.log('エラー　取得したデータ: ' + JSON.stringify(data));
           })
-　　　　　　.GG_PointInput(sheetname,hole,h_len,sr1,sr2,sr3,sr4,sr5,sr6,sr7,sr8);
+　　　　　　.GG_PointInput(sheetname,hole,h_len,sr1,sr2,sr3,sr4,sr5,sr6,sr7,sr8,men_amount);
     },
     get_graff: async function(sheetname,ssId) {
       const ps_data_all = await this.getSheetData(sheetname,ssId);

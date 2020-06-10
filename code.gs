@@ -132,41 +132,39 @@ else if(param == 'ggqa'){
    var count_1_7 = '=countif(H6:H39,"1")';
    var count_1_8 = '=countif(I6:I39,"1")';
    
-   
-   
-   var sh_gameinfo = [['Hole','選手1','選手2','選手3','選手4','選手5','選手6','選手7','選手8','日時']];
+   var sh_gameinfo = [['Hole','選手1','選手2','選手3','選手4','選手5','選手6','選手7','選手8','','日時']];
    var sh =  ss.getSheetByName(sheetname);
-   sh.getRange(1,1,1,10).setValues(sh_gameinfo);
+   sh.getRange(1,1,1,11).setValues(sh_gameinfo);
    var sh_gameinint = [['Total',point_total_1,point_total_2,point_total_3,point_total_4,point_total_5,point_total_6,point_total_7,point_total_8]];
    sh.getRange(2,1,1,9).setValues(sh_gameinint);
    
-   var sh_gameinint2 = [['Average',point_ave_1,point_ave_2,point_ave_3,point_ave_4,point_ave_5,point_ave_6,point_ave_7,point_ave_8]];//計算未
+   var sh_gameinint2 = [['Average',point_ave_1,point_ave_2,point_ave_3,point_ave_4,point_ave_5,point_ave_6,point_ave_7,point_ave_8]];
    sh.getRange(3,1,1,9).setValues(sh_gameinint2);
    
-   var sh_gameinint3 = [['1打回数',count_1_1,count_1_2,count_1_3,count_1_4,count_1_5,count_1_6,count_1_7,count_1_8]];//計算未
+   var sh_gameinint3 = [['1打回数',count_1_1,count_1_2,count_1_3,count_1_4,count_1_5,count_1_6,count_1_7,count_1_8]];
    sh.getRange(4,1,1,9).setValues(sh_gameinint3);
 
-   var sh_gameinint = [['0',mem1,mem2,mem3,mem4,mem5,mem6,mem7,mem8,'コース長']];
-   sh.getRange(5,1,1,10).setValues(sh_gameinint);
+   var sh_gameinint = [['0',mem1,mem2,mem3,mem4,mem5,mem6,mem7,mem8,'コース長','日時']];
+   sh.getRange(5,1,1,11).setValues(sh_gameinint);
                        
    //gameid,player情報をindexへ
    var temp = HtmlService.createTemplateFromFile("GrandGolf_input");
 
-   temp.gameid = newgid;
-   temp.game_name = gamename;
-   temp.com_ssId = '1tuBaA_yE9fQgojqtp4Mzj-R0gvr0-4-6WjJZyeh6hX8';
-   temp.course_name = coursename;
-   temp.player1 = mem1;
-   temp.player2 = mem2;
-   temp.player3 = mem3;
-   temp.player4 = mem4;
-   temp.player5 = mem5;
-   temp.player6 = mem6;
-   temp.player7 = mem7;
-   temp.player8 = mem8;
-   temp.com_ssId = ssId;
-   temp.mem_amount = mem_amount;
-   temp.starthole = starthole;
+     temp.gameid = newgid;
+     temp.game_name = gamename;
+     temp.com_ssId = '1tuBaA_yE9fQgojqtp4Mzj-R0gvr0-4-6WjJZyeh6hX8';
+     temp.course_name = coursename;
+     temp.player1 = mem1;
+     temp.player2 = mem2;
+     temp.player3 = mem3;
+     temp.player4 = mem4;
+     temp.player5 = mem5;
+     temp.player6 = mem6;
+     temp.player7 = mem7;
+     temp.player8 = mem8;
+     temp.com_ssId = ssId;
+     temp.mem_amount = mem_amount;
+     temp.starthole = starthole;
    
    return temp.evaluate().setTitle('GrandGolfInputStats!').addMetaTag('viewport', 'width=device-width, initial-scale=1')
    .setFaviconUrl('https://drive.google.com/uc?id=1rvttJYokHuEnkGCEcwWWeOK7IEo3kVVc&.png');
@@ -181,23 +179,72 @@ else if(param == 'ggqa'){
 
 
 //●GGスコア記録
-function GG_PointInput(sheetname,hole,h_len,sr1,sr2,sr3,sr4,sr5,sr6,sr7,sr8){
+function GG_PointInput(sheetname,hole,h_len,sr1,sr2,sr3,sr4,sr5,sr6,sr7,sr8,men_amount){
   console.log('GGpoint_input');
   console.log('GGpoint_input'+sr8);
   var ssId = '1tuBaA_yE9fQgojqtp4Mzj-R0gvr0-4-6WjJZyeh6hX8';
   var ss = SpreadsheetApp.openById(ssId);
   var sh = ss.getSheetByName(sheetname);
+  var date = GetNow();
   var last_row = sh.getLastRow();
- // var range = sh.getRange(last_row,1,1,1);
- // var hole = range.getValue();
+  
+  switch(true){
+    case (men_amount == 2):
+　　　 sr3 = '';
+      sr4 = '';
+      sr5 = '';
+      sr6 = '';
+      sr7 = '';
+      sr8 = ''
+      break;
+    case (men_amount == 3):
+      sr4 = '';
+      sr5 = '';
+      sr6 = '';
+      sr7 = '';
+      sr8 = '';
+      break;
+    case (men_amount == 4):
+      sr5 = '';
+      sr6 = '';
+      sr7 = '';
+      sr8 = '';
+      break;
+    case (men_amount == 5):
+      sr6 = '';
+      sr7 = '';
+      sr8 = '';
+      break;
+    case (men_amount == 6):
+      sr7 = '';
+      sr8 = '';
+      break;
+    case (men_amount == 7):
+      sr8 = '';
+      break;
+  }
+    
   console.log('hole '+hole);
-  var last_score = [[hole,sr1,sr2,sr3,sr4,sr5,sr6,sr7,sr8,h_len]];
+  var last_score = [[hole,sr1,sr2,sr3,sr4,sr5,sr6,sr7,sr8,h_len,date]];
   console.log(last_score);
-  sh.getRange(last_row+1, 1,1,10).setValues(last_score);
+  sh.getRange(last_row+1, 1,1,11).setValues(last_score);
   var hole = Number(hole);
   console.log('hole2 ' + hole);  
   var hole = hole + 1;
   console.log('hole3 ' + hole);
+  var last_row = sh.getLastRow();
+  console.log('gginpute lastrow ' + last_row);
+  if(last_row =='13'){
+       console.log('ggpoint lastholw ');
+    var hole = 0;
+  }
+  if(hole == '9'){
+    var hole = 1;
+  }
+ console.log('hole '+hole);
+
+
+    
   return hole;
 }
 
