@@ -175,6 +175,7 @@ var vm = new Vue({
       showAll:true,
       showFin:false,
       ps_data:[],
+      latest_hole:'',
   },
   methods: {
     put_score: function (sheetname,hole,h_len,sr1,sr2,sr3,sr4,sr5,sr6,sr7,sr8,mem_amount) {
@@ -196,11 +197,17 @@ var vm = new Vue({
     },
     get_graff: async function(sheetname,ssId,mem_amount) {
       const ps_data_all = await this.getSheetData(sheetname,ssId,mem_amount);
-      console.log('ps_data_all ' + ps_data_all);
       var ps_data = ps_data_all[0];
       console.log('pa_data ' + ps_data);
-      this.ps_data = ps_data;     
-      this.displayGraph_total(ps_data,mem_amount);
+      this.ps_data = ps_data;
+
+      //記録済の最新ホール番号を入手、グラフのヘッダ用
+      const latest_hole = await this.getlatest_hole(sheetname,ssId);
+      console.log('graph latest hole ' + latest_hole);
+      this.latest_hole = latest_hole;
+      console.log('graph latest this.hole ' + latest_hole);
+
+      this.displayGraph_total(ps_data,mem_amount,latest_hole);
       this.sr1 = '';
       this.sr2 = '';
       this.sr3 = '';
@@ -209,8 +216,8 @@ var vm = new Vue({
       this.sr6 = '';
       this.sr7 = '';
       this.sr8 = '';
-
       },
+      
       getSheetData: function(sheetname,ssId,mem_amount) {
         console.log('sheetname2: ' + sheetname);
         //コード.js内のgetSheetData()を実行
@@ -220,10 +227,14 @@ var vm = new Vue({
             .withFailureHandler((error) => resolve(error))
             .GG_latest_point(sheetname,ssId,mem_amount);
         });
-      },    
-      displayGraph_total: function(ps_data,mem_amount){
+      },
+      
+      displayGraph_total: function(ps_data,mem_amount,latest_hole){
       console.log('graph mem amount ' + mem_amount);
       console.log('graph mem ps_data ' + ps_data);
+      console.log('graph latest_hole ' + latest_hole);
+
+
       //人数により、ラベルを制御
       if(mem_amount == 2){
         var labels_name = [<?=player1 ?>,<?=player2 ?>];
@@ -254,7 +265,7 @@ var vm = new Vue({
         data:{
          labels:labels_name,
          datasets:[{
-         label: "hole",
+         label: '終了ホール'+ latest_hole,
          backgroundColor: "#A4C6FF",                  // 棒の塗りつぶし色
          data:this.ps_data
          }]
@@ -262,10 +273,14 @@ var vm = new Vue({
      options:{
          scales: {
            yAxes: [{
+             padding: 100,
              ticks: {
-               min: 0
-             }
-           }]
+               min: 0,
+             },
+           }],
+           xAxes:[{
+             categoryPercentage: 0.5
+           }],
          }
      },
      });//chartの終わり
@@ -285,7 +300,15 @@ var vm = new Vue({
 　　　　　　.undo_score(sheetname,ssId);
     },//undoの終わり
     
-    
+    //記録済最新ホール番号
+    getlatest_hole: function(sheetname,ssId) {
+      return new Promise((resolve, reject) => {
+        google.script.run
+          .withSuccessHandler((result) => resolve(result))
+          .withFailureHandler((error) => resolve(error))
+        .latest_hole(sheetname,ssId);
+        });
+      },//最新ホール終
     
 },//method終わり
 

@@ -279,10 +279,13 @@ function undo_score(sheetName,ssId){
 }  
 
 function latest_hole(sheetName,ssId){
+  var ss = SpreadsheetApp.openById(ssId);
+  var sh = ss.getSheetByName(sheetName);
+  var last_row = sh.getLastRow();
   var range = sh.getRange(last_row,1,1,1);
   var hole = range.getValues();
   var hole = Number(hole);
-  console.lgo('GG_latest_point ' + hole);
+  console.log('GG_latest_hole ' + hole);
   return hole;
 }
 
