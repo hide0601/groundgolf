@@ -242,11 +242,59 @@ function GG_PointInput(sheetname,hole,h_len,sr1,sr2,sr3,sr4,sr5,sr6,sr7,sr8,men_
     var hole = 1;
   }
  console.log('hole '+hole);
-
-
-    
   return hole;
 }
+
+
+//●GG最新スコア入手
+function GG_latest_point(sheetname,ssId,mem_amount){
+  Utilities.sleep(2000);//最新データが書き込まれるのWait（←本当はさけたい）
+  var ssId = ssId;
+  var ss = SpreadsheetApp.openById(ssId);
+  var sh = ss.getSheetByName(sheetname);
+  var last_row = sh.getLastRow();
+  var range = sh.getRange(2,2,1,mem_amount);
+  var latest_score = range.getValues();
+  console.log('GG_latest_point '+ latest_score);
+
+  return latest_score;
+}
+
+
+//●シート最新情報削除
+function undo_score(sheetName,ssId){
+//  var ssId = '10-19IiogcPd5SdyP1_OU6tUXEob7V_OOOziKnbT0LSg';
+  var ss = SpreadsheetApp.openById(ssId);
+  var sh = ss.getSheetByName(sheetName);
+  var last_row = sh.getLastRow();
+  sh.deleteRows(last_row);
+  var last_row = sh.getLastRow();
+  var range = sh.getRange(last_row,1,1,1);
+  var hole = range.getValues();
+  var hole = Number(hole);
+
+  console.log('deleteのhole ' + hole);
+  hole = hole + 1;
+  return hole;  
+}  
+
+function latest_hole(sheetName,ssId){
+  var range = sh.getRange(last_row,1,1,1);
+  var hole = range.getValues();
+  var hole = Number(hole);
+  console.lgo('GG_latest_point ' + hole);
+  return hole;
+}
+
+
+
+
+
+
+
+//★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★
+//★★★★★★★★★★★★★　　未使用　テニス？　　★★★★★★★★★★★★★
+//★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★
 
 //●GGTotalScore入手
 function GG_point_stats(sheetname,ssId){
@@ -259,12 +307,6 @@ function GG_point_stats(sheetname,ssId){
   var total_score = range.getValues();
   return total_score;
 }
-
-
-//★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★
-//★★★★★★★★★★★★★　　テニス？　　★★★★★★★★★★★★★★★★
-//★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★
-
 
 
 
@@ -695,17 +737,6 @@ function get_game_info(sheetName,ssId,col){
   return values;
 }
 
-//●シート最新情報削除
-function undo_score(sheetName,ssId){
-//  var ssId = '10-19IiogcPd5SdyP1_OU6tUXEob7V_OOOziKnbT0LSg';
-  var ss = SpreadsheetApp.openById(ssId);
-  var sh = ss.getSheetByName(sheetName);
-  var last_row = sh.getLastRow();
-  sh.deleteRows(last_row);
-  var values = get_latest_score(sheetName,ssId);//最新スコア入手
-  console.log(values);
-  return values;  
-}  
 
 //●今回のサーブとサーバー情報入手
 function current_sside(pointA,pointB,serve,server,nextserver){

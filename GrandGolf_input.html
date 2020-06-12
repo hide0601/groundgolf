@@ -14,7 +14,7 @@
   <!-- Vue -->
   <div class="block" id="app">
     <center>
-      <h2 title="GAME No.<?=gameid ?>">大会名:<?=game_name ?>( <?=course_name ?>コース）</h2>
+      <h2 title="GAME No.<?=gameid ?>"><?=game_name ?>大会( <?=course_name ?>コース）</h2>
     </center>
   <template v-if="showAll">
     <center>
@@ -127,18 +127,26 @@
     </table>
 
     <center>
-    <button class="button3" @click="put_score(<?=gameid ?>,hole,h_len,sr1,sr2,sr3,sr4,sr5,sr6,sr7,sr8,<?=mem_amount?>);get_graff(<?=gameid ?>,'<?=com_ssId?>')" >データ更新</button>
+    <button class="button3" @click="put_score(<?=gameid ?>,hole,h_len,sr1,sr2,sr3,sr4,sr5,sr6,sr7,sr8,<?=mem_amount?>);get_graff(<?=gameid ?>,'<?=com_ssId?>',<?=mem_amount?>)" >データ更新</button>
+    <button class="button5" @click="undo_score(<?=gameid ?>,'<?=com_ssId?>');get_graff(<?=gameid ?>,'<?=com_ssId?>',<?=mem_amount?>)">やり直し</button>
     </center>
- 
+    
+    <!-- グラフ　-->
+
+  <center>
+    <div class="parent">
         <div class="chart-container" style="position: relative; width:100%; height:100%">
           <p><canvas id="myChart_total_stats"></canvas>
         </div>
-  </template>
+    </div>
+  </center>
+  </template>　<!--通常の表示-->
+  
   <template v-if="showFin">
     <h4>Fin</h4>
   </template>
-  <!-- vue -->
-  </div>
+  </div>  <!-- vue -->
+
 
 
 
@@ -169,7 +177,7 @@ var vm = new Vue({
       ps_data:[],
   },
   methods: {
-    put_score: function (sheetname,hole,h_len,sr1,sr2,sr3,sr4,sr5,sr6,sr7,sr8,men_amount) {
+    put_score: function (sheetname,hole,h_len,sr1,sr2,sr3,sr4,sr5,sr6,sr7,sr8,mem_amount) {
     console.log(sheetname,sr1);
     google.script.run
           .withSuccessHandler(function (data) {
@@ -184,14 +192,15 @@ var vm = new Vue({
           .withFailureHandler(function (data) {
           // GASエラー時の処理
           })
-　　　　　　.GG_PointInput(sheetname,hole,h_len,sr1,sr2,sr3,sr4,sr5,sr6,sr7,sr8,men_amount);
+　　　　　　.GG_PointInput(sheetname,hole,h_len,sr1,sr2,sr3,sr4,sr5,sr6,sr7,sr8,mem_amount);
     },
-    get_graff: async function(sheetname,ssId) {
-      const ps_data_all = await this.getSheetData(sheetname,ssId);
+    get_graff: async function(sheetname,ssId,mem_amount) {
+      const ps_data_all = await this.getSheetData(sheetname,ssId,mem_amount);
+      console.log('ps_data_all ' + ps_data_all);
       var ps_data = ps_data_all[0];
       console.log('pa_data ' + ps_data);
       this.ps_data = ps_data;     
-      this.displayGraph_total(ps_data);
+      this.displayGraph_total(ps_data,mem_amount);
       this.sr1 = '';
       this.sr2 = '';
       this.sr3 = '';
@@ -202,40 +211,84 @@ var vm = new Vue({
       this.sr8 = '';
 
       },
-      getSheetData: function(sheetname,ssId) {
+      getSheetData: function(sheetname,ssId,mem_amount) {
         console.log('sheetname2: ' + sheetname);
         //コード.js内のgetSheetData()を実行
         return new Promise((resolve, reject) => {
           google.script.run
             .withSuccessHandler((result) => resolve(result))
             .withFailureHandler((error) => resolve(error))
-            .GG_point_stats(sheetname,ssId);
+            .GG_latest_point(sheetname,ssId,mem_amount);
         });
       },    
-      displayGraph_total: function(){
+      displayGraph_total: function(ps_data,mem_amount){
+      console.log('graph mem amount ' + mem_amount);
+      console.log('graph mem ps_data ' + ps_data);
+      //人数により、ラベルを制御
+      if(mem_amount == 2){
+        var labels_name = [<?=player1 ?>,<?=player2 ?>];
+        }
+      else if (mem_amount == 3){
+        var labels_name = [<?=player1 ?>,<?=player2 ?>,<?=player3 ?>];
+        }
+      else if (mem_amount == 4){
+        var labels_name = [<?=player1 ?>,<?=player2 ?>,<?=player3 ?>,<?=player4 ?>];
+        }
+      else if (mem_amount == 5){
+        var labels_name = [<?=player1 ?>,<?=player2 ?>,<?=player3 ?>,<?=player4 ?>,<?=player5 ?>];
+        }
+      else if (mem_amount == 6){
+        var labels_name = [<?=player1 ?>,<?=player2 ?>,<?=player3 ?>,<?=player4 ?>,<?=player5 ?>,<?=player6 ?>];
+        }
+      else if (mem_amount == 7){
+        var labels_name = [<?=player1 ?>,<?=player2 ?>,<?=player3 ?>,<?=player4 ?>,<?=player5 ?>,<?=player6 ?>,<?=player7 ?>];
+        }
+      else if (mem_amount == 8){
+        var labels_name = [<?=player1 ?>,<?=player2 ?>,<?=player3 ?>,<?=player4 ?>,<?=player5 ?>,<?=player6 ?>,<?=player8 ?>];
+        }
+
+
       var ctx = document.getElementById('myChart_total_stats').getContext('2d');
       var myChart_total_stats = new Chart(ctx, {
         type: "bar",
         data:{
-         labels:[<?=player1 ?>,<?=player2 ?>,<?=player3 ?>,<?=player4 ?>,<?=player5 ?>],
+         labels:labels_name,
          datasets:[{
-         label: 'TotalScore',
+         label: "hole",
+         backgroundColor: "#A4C6FF",                  // 棒の塗りつぶし色
          data:this.ps_data
          }]
        },
-     options:{    
-/*     title: {
-       display: true,
-       fontSize: 12,
-       text: 'TotalScore'
-       },
-*/ 
+     options:{
+         scales: {
+           yAxes: [{
+             ticks: {
+               min: 0
+             }
+           }]
+         }
      },
-     });
-    },
+     });//chartの終わり
+    },//graphの終わり
+    
+ //score修正
+    undo_score: function(sheetname,ssId){
+          google.script.run
+          .withSuccessHandler(function (data) {
+            vm.hole=data;
+            console.log('正常　取得したデータ: ' + data);
+          })
+          .withFailureHandler(function (data) {
+          // GASエラー時の処理
+            console.log('エラー　取得したデータ: ' + JSON.stringify(data));
+          })
+　　　　　　.undo_score(sheetname,ssId);
+    },//undoの終わり
+    
+    
+    
 },//method終わり
 
-//★できていない
 mounted:function(){
   var showP3 = "";
   var showP4 = "";
@@ -283,6 +336,40 @@ mounted:function(){
 
 })//vueの終わり
 
+//Chartのデータラベル
+Chart.plugins.register({
+    afterDatasetsDraw: function (chart, easing) {
+        // To only draw at the end of animation, check for easing === 1
+        var ctx = chart.ctx;
+
+        chart.data.datasets.forEach(function (dataset, i) {
+            var meta = chart.getDatasetMeta(i);
+            if (!meta.hidden) {
+                meta.data.forEach(function (element, index) {
+                    // Draw the text in black, with the specified font
+                    ctx.fillStyle = 'rgb(0, 0, 0)';
+
+                    var fontSize = 12;
+                    var fontStyle = 'normal';
+                    var fontFamily = 'Helvetica Neue';
+                    ctx.font = Chart.helpers.fontString(fontSize, fontStyle, fontFamily);
+
+                    // Just naively convert to string for now
+                    var dataString = dataset.data[index].toString();
+
+                    // Make sure alignment settings are correct
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'middle';
+
+                    var padding = 5;
+                    var position = element.tooltipPosition();
+                    ctx.fillText(dataString, position.x, position.y - (fontSize / 2) - padding);
+                });
+            }
+        });
+    }
+});
+//chartのデータラベル終
 
 
 </script>
