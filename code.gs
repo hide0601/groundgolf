@@ -114,14 +114,14 @@ else if(param == 'ggqa'){
    var point_total_7 = '=sum(H5:H39)-(H4*3)';
    var point_total_8 = '=sum(I5:I39)-(I4*3)';
    
-   var point_ave_1 = '=average(B5:B39)';
-   var point_ave_2 = '=average(C5:C39)';
-   var point_ave_3 = '=average(D5:D39)';
-   var point_ave_4 = '=average(E5:E39)';
-   var point_ave_5 = '=average(F5:F39)';
-   var point_ave_6 = '=average(G5:G39)';
-   var point_ave_7 = '=average(H5:H39)';
-   var point_ave_8 = '=average(I5:I39)';
+   var point_ave_1 = '=TRUNC(average(B5:B39),1)';
+   var point_ave_2 = '=TRUNC(average(C5:C39),1)';
+   var point_ave_3 = '=TRUNC(average(D5:D39),1)';
+   var point_ave_4 = '=TRUNC(average(E5:E39),1)';
+   var point_ave_5 = '=TRUNC(average(F5:F39),1)';
+   var point_ave_6 = '=TRUNC(average(G5:G39),1)';
+   var point_ave_7 = '=TRUNC(average(H5:H39),1)';
+   var point_ave_8 = '=TRUNC(average(I5:I39),1)';
    
    var count_1_1 = '=countif(B5:B39,"1")';
    var count_1_2 = '=countif(C5:C39,"1")';
@@ -168,7 +168,58 @@ else if(param == 'ggqa'){
    
    return temp.evaluate().setTitle('GrandGolfInputStats!').addMetaTag('viewport', 'width=device-width, initial-scale=1')
    .setFaviconUrl('https://drive.google.com/uc?id=1rvttJYokHuEnkGCEcwWWeOK7IEo3kVVc&.png');
- }    
+ }//gg_input終了
+  
+  
+  else if(param == 'gg_view'){
+    var ssId = '1tuBaA_yE9fQgojqtp4Mzj-R0gvr0-4-6WjJZyeh6hX8';  //GroundGolf_Score_2020_01
+    var ss = SpreadsheetApp.openById(ssId);
+    var sh = ss.getSheetByName('gamemaster');
+    var lastRow = sh.getLastRow();
+    // 最古GameIDをgropumasterから取得
+    var range = sh.getRange(lastRow,1,1,1);
+    var gid = range.getValue();
+    
+    var temp = HtmlService.createTemplateFromFile("GroundGolf_view");//★★まだつくってない
+   
+    var vgid = e.parameter.viewgid;
+    temp.gameid = vgid;
+    //IFされたGameIDのチェック
+    var dat = sh.getDataRange().getValues(); //受け取ったシートのデータを二次元配列に取得
+    var col = 1;
+    var val = Number(vgid);
+      for(var i=1;i<dat.length;i++){
+        if(dat[i][col-1] === val){
+          var vfgid =  i+1;//二次配列を検索して、行番号を入手（ただし、-1）
+        }
+      }
+    //該当するGameIDがない場合,tennis_view_errorを表示
+    if (vfgid === void 0){
+      var temp = HtmlService.createTemplateFromFile("GG_view_error");//鑑賞のGameIDがない場合の処理
+      return temp.evaluate().setTitle('GG_view_error').addMetaTag('viewport', 'width=device-width, initial-scale=1');
+    }
+   //対象行を入手（二次配列）　★★ゲーム情報の取得　未作成
+    var scoreAll = sh.getRange(vfgid,1,1,9).getValues();
+    //二次配列を一次配列
+    var scoreAllRow = scoreAll[0];
+    var vgameid = scoreAllRow[0];
+    var vgidname = scoreAllRow[3];
+    var vplayerA = scoreAllRow[4];
+    var vplayerB = scoreAllRow[5];   
+         
+    temp.vgidnammehtml = vgidname;
+    temp.playerA = vplayerA;
+    temp.playerB = vplayerB;
+    temp.com_ssId = ssId; 
+     
+    return temp.evaluate().setTitle('ViewTennisStats!').addMetaTag('viewport', 'width=device-width, initial-scale=1');
+  }  
+  
+  
+  
+  
+  
+  
 }//doPost終了
 
 
@@ -276,6 +327,7 @@ function undo_score(sheetName,ssId){
   return hole;  
 }  
 
+//●Holeを表示するために、最新のホール番号を入手
 function latest_hole(sheetName,ssId){
   var ss = SpreadsheetApp.openById(ssId);
   var sh = ss.getSheetByName(sheetName);
@@ -287,6 +339,19 @@ function latest_hole(sheetName,ssId){
   return hole;
 }
 
+//●スタッツ情報を入手
+function GG_point_stats(sheetname,mem_amount){
+  Utilities.sleep(2000);//最新データが書き込まれるのWait（←本当はさけたい）
+  var ssId = '1tuBaA_yE9fQgojqtp4Mzj-R0gvr0-4-6WjJZyeh6hX8'; //GroundGolf_Score_2020_01
+  var ss = SpreadsheetApp.openById(ssId);
+  var sh = ss.getSheetByName(sheetname);
+  var mem_amount = Number(mem_amount);
+  var mem_amount = mem_amount + 1;
+  var range = sh.getRange(1,1,4,mem_amount);
+  var GG_total_score = range.getValues();
+  console.log('last stats '+ GG_total_score);
+  return GG_total_score;
+}
 
 
 
@@ -298,16 +363,6 @@ function latest_hole(sheetName,ssId){
 //★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★
 
 //●GGTotalScore入手
-function GG_point_stats(sheetname,ssId){
-  Utilities.sleep(2000);//最新データが書き込まれるのWait（←本当はさけたい）
-  var ssId = ssId;
-  var ss = SpreadsheetApp.openById(ssId);
-  var sh = ss.getSheetByName(sheetname);
-  var last_row = sh.getLastRow();
-  var range = sh.getRange(last_row,2,1,5);
-  var total_score = range.getValues();
-  return total_score;
-}
 
 
 

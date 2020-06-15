@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <base target="_top">
+    <style>
+      table{
+        border: solid 1px #000000;
+        border-collapse: collapse;
+      }
+      th {border: solid 1px #000000}
+      td {border: solid 1px #000000}
+    </style>
+    <?!= HtmlService.createHtmlOutputFromFile('css').getContent(); ?>
+    <link href="https://fonts.googleapis.com/css?family=Noto+Sans+JP:400,700&display=swap&subset=japanese" rel="stylesheet">
+</head>
+
+<body>
+  <p class = "h_web_font_r">該当する試合番号がありません。（再入力）</p>    
+    <form method="post" action="https://script.google.com/macros/s/AKfycbzQaXKek7UwUiJLF5X01vWgsMsYy2l3PF4L1f-loHmXEmZ0pj4/exec?param=gg_view" accept-charset="utf-8">   
+      <div class = "h_web_font">
+        <label>試合番号：<input type="number" name="viewgid"></label><br>
+        <input type="submit" class = "form_button" value="送信する">
+      </div>
+    </form>
+</body>
+</html>

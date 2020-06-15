@@ -33,7 +33,7 @@
         <div class = "h_web_font">
           <label>大会名　：<input type="text" name="gamename" maxlength="8"placeholder="8文字以内"></label><br>
           <label>コース名：<input type="text" name="coursename" maxlength="8"placeholder="8文字以内"></label><br>
-          <label>スタートホール：<input type="number" name="starthole" placeholder="ホール"></label><br>
+          <label>スタートホール：<input type="number" name="starthole" min="1"placeholder="ホール"></label><br>
           <label>選手名１：<input type="text" name="mem1"maxlength="8"placeholder="8文字以内"></label><br>
           <label>選手名２：<input type="text" name="mem2"maxlength="8"placeholder="8文字以内"></label><br>
           <label>選手名３：<input type="text" name="mem3"maxlength="8"placeholder="8文字以内"></label><br>
@@ -51,7 +51,6 @@
       <form method="post" action="https://script.google.com/macros/s/AKfycbzQaXKek7UwUiJLF5X01vWgsMsYy2l3PF4L1f-loHmXEmZ0pj4/exec?param=gg_view" accept-charset="utf-8">   
         <div class = "h_web_font">
           <label>試合番号：<input type="number" name="viewgid"></label><br><br>
-          <input type="hidden" name="com_ssId" value= "1Iu034AQeLws5UY-mJu1Wod8XFHbcLslls3F0QYd7J8o"><!--当初企業ごとシートのため、シートIDを埋め込みで渡している-->
           <input type="submit" class = "form_button" value="送信する"><hr>
         </div>
     </form>
