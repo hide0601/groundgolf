@@ -10,6 +10,7 @@
   <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0/dist/Chart.min.js"></script>   
   <script src="https://cdn.jsdelivr.net/npm/@chenfengyuan/vue-number-input@1.2.1/dist/vue-number-input.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.3.1.js"></script>
 
   <!-- Vue -->
   <div class="block" id="app">
@@ -271,6 +272,8 @@ var vm = new Vue({
          }]
        },
      options:{
+       responsive: true,
+       maintainAspectRatio: true,
          scales: {
            yAxes: [{
              padding: 100,
@@ -279,7 +282,7 @@ var vm = new Vue({
              },
            }],
            xAxes:[{
-             categoryPercentage: 0.5
+             categoryPercentage: 0.3
            }],
          }
      },
@@ -394,6 +397,8 @@ Chart.plugins.register({
 });
 //chartのデータラベル終
 
+$('#myChart_total_stats').css('width','50%');
+$('#myChart_total_stats').css('height','50%');
 
 </script>
 

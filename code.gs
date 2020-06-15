@@ -105,14 +105,14 @@ else if(param == 'ggqa'){
    console.log('lastRow '+lastRow);
    console.log('人数 ' + mem_amount);
    
-   var point_total_1 = '=sum(B6:B39)';
-   var point_total_2 = '=sum(C6:C39)';
-   var point_total_3 = '=sum(D6:D39)';
-   var point_total_4 = '=sum(E6:E39)';
-   var point_total_5 = '=sum(F6:F39)';
-   var point_total_6 = '=sum(G6:G39)';
-   var point_total_7 = '=sum(H6:H39)';
-   var point_total_8 = '=sum(I6:I39)';
+   var point_total_1 = '=sum(B6:B39)-(B4*3)';
+   var point_total_2 = '=sum(C6:C39)-(C4*3)';
+   var point_total_3 = '=sum(D6:D39)-(D4*3)';
+   var point_total_4 = '=sum(E6:E39)-(E4*3)';
+   var point_total_5 = '=sum(F6:F39)-(F4*3)';
+   var point_total_6 = '=sum(G6:G39)-(G4*3)';
+   var point_total_7 = '=sum(H6:H39)-(H4*3)';
+   var point_total_8 = '=sum(I6:I39)-(I4*3)';
    
    var point_ave_1 = '=average(B6:B39)';
    var point_ave_2 = '=average(C6:C39)';
