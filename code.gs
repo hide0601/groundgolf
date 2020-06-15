@@ -105,34 +105,34 @@ else if(param == 'ggqa'){
    console.log('lastRow '+lastRow);
    console.log('人数 ' + mem_amount);
    
-   var point_total_1 = '=sum(B6:B39)-(B4*3)';
-   var point_total_2 = '=sum(C6:C39)-(C4*3)';
-   var point_total_3 = '=sum(D6:D39)-(D4*3)';
-   var point_total_4 = '=sum(E6:E39)-(E4*3)';
-   var point_total_5 = '=sum(F6:F39)-(F4*3)';
-   var point_total_6 = '=sum(G6:G39)-(G4*3)';
-   var point_total_7 = '=sum(H6:H39)-(H4*3)';
-   var point_total_8 = '=sum(I6:I39)-(I4*3)';
+   var point_total_1 = '=sum(B5:B39)-(B4*3)';
+   var point_total_2 = '=sum(C5:C39)-(C4*3)';
+   var point_total_3 = '=sum(D5:D39)-(D4*3)';
+   var point_total_4 = '=sum(E5:E39)-(E4*3)';
+   var point_total_5 = '=sum(F5:F39)-(F4*3)';
+   var point_total_6 = '=sum(G5:G39)-(G4*3)';
+   var point_total_7 = '=sum(H5:H39)-(H4*3)';
+   var point_total_8 = '=sum(I5:I39)-(I4*3)';
    
-   var point_ave_1 = '=average(B6:B39)';
-   var point_ave_2 = '=average(C6:C39)';
-   var point_ave_3 = '=average(D6:D39)';
-   var point_ave_4 = '=average(E6:E39)';
-   var point_ave_5 = '=average(F6:F39)';
-   var point_ave_6 = '=average(G6:G39)';
-   var point_ave_7 = '=average(H6:H39)';
-   var point_ave_8 = '=average(I6:I39)';
+   var point_ave_1 = '=average(B5:B39)';
+   var point_ave_2 = '=average(C5:C39)';
+   var point_ave_3 = '=average(D5:D39)';
+   var point_ave_4 = '=average(E5:E39)';
+   var point_ave_5 = '=average(F5:F39)';
+   var point_ave_6 = '=average(G5:G39)';
+   var point_ave_7 = '=average(H5:H39)';
+   var point_ave_8 = '=average(I5:I39)';
    
-   var count_1_1 = '=countif(B6:B39,"1")';
-   var count_1_2 = '=countif(C6:C39,"1")';
-   var count_1_3 = '=countif(D6:D39,"1")';
-   var count_1_4 = '=countif(E6:E39,"1")';
-   var count_1_5 = '=countif(F6:F39,"1")';
-   var count_1_6 = '=countif(G6:G39,"1")';
-   var count_1_7 = '=countif(H6:H39,"1")';
-   var count_1_8 = '=countif(I6:I39,"1")';
+   var count_1_1 = '=countif(B5:B39,"1")';
+   var count_1_2 = '=countif(C5:C39,"1")';
+   var count_1_3 = '=countif(D5:D39,"1")';
+   var count_1_4 = '=countif(E5:E39,"1")';
+   var count_1_5 = '=countif(F5:F39,"1")';
+   var count_1_6 = '=countif(G5:G39,"1")';
+   var count_1_7 = '=countif(H5:H39,"1")';
+   var count_1_8 = '=countif(I5:I39,"1")';
    
-   var sh_gameinfo = [['Hole','選手1','選手2','選手3','選手4','選手5','選手6','選手7','選手8','','日時']];
+   var sh_gameinfo = [['Hole',mem1,mem2,mem3,mem4,mem5,mem6,mem7,mem8,'コース長','日時']];
    var sh =  ss.getSheetByName(sheetname);
    sh.getRange(1,1,1,11).setValues(sh_gameinfo);
    var sh_gameinint = [['Total',point_total_1,point_total_2,point_total_3,point_total_4,point_total_5,point_total_6,point_total_7,point_total_8]];
@@ -144,8 +144,8 @@ else if(param == 'ggqa'){
    var sh_gameinint3 = [['1打回数',count_1_1,count_1_2,count_1_3,count_1_4,count_1_5,count_1_6,count_1_7,count_1_8]];
    sh.getRange(4,1,1,9).setValues(sh_gameinint3);
 
-   var sh_gameinint = [['0',mem1,mem2,mem3,mem4,mem5,mem6,mem7,mem8,'コース長','日時']];
-   sh.getRange(5,1,1,11).setValues(sh_gameinint);
+//   var sh_gameinint = [['0',mem1,mem2,mem3,mem4,mem5,mem6,mem7,mem8,'コース長','日時']];
+//   sh.getRange(5,1,1,11).setValues(sh_gameinint);
                        
    //gameid,player情報をindexへ
    var temp = HtmlService.createTemplateFromFile("GrandGolf_input");
@@ -180,9 +180,7 @@ else if(param == 'ggqa'){
 
 //●GGスコア記録
 function GG_PointInput(sheetname,hole,h_len,sr1,sr2,sr3,sr4,sr5,sr6,sr7,sr8,men_amount){
-  console.log('GGpoint_input');
-  console.log('GGpoint_input'+sr8);
-  var ssId = '1tuBaA_yE9fQgojqtp4Mzj-R0gvr0-4-6WjJZyeh6hX8';
+  var ssId = '1tuBaA_yE9fQgojqtp4Mzj-R0gvr0-4-6WjJZyeh6hX8'; //GroundGolf_Score_2020_01
   var ss = SpreadsheetApp.openById(ssId);
   var sh = ss.getSheetByName(sheetname);
   var date = GetNow();
@@ -234,7 +232,7 @@ function GG_PointInput(sheetname,hole,h_len,sr1,sr2,sr3,sr4,sr5,sr6,sr7,sr8,men_
   console.log('hole3 ' + hole);
   var last_row = sh.getLastRow();
   console.log('gginpute lastrow ' + last_row);
-  if(last_row =='13'){
+  if(last_row =='12'){
        console.log('ggpoint lastholw ');
     var hole = 0;
   }
