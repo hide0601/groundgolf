@@ -346,11 +346,50 @@ function GG_point_stats(sheetname,mem_amount){
   var ss = SpreadsheetApp.openById(ssId);
   var sh = ss.getSheetByName(sheetname);
   var mem_amount = Number(mem_amount);
-  var mem_amount = mem_amount + 1;
-  var range = sh.getRange(1,1,4,mem_amount);
+  var range = sh.getRange(1,2,4,mem_amount);
   var GG_total_score = range.getValues();
-  console.log('last stats '+ GG_total_score);
-  return GG_total_score;
+  console.log('last stats '+ GG_total_score);  
+  var _ = Underscore.load();//ライブラリを使って配列の行・列を入替え
+  var arrTrans = _.zip.apply(_, GG_total_score);
+  console.log('laste stats 2 '+arrTrans);
+  
+  var arrTrans2 = str_sort2d(arrTrans);
+  console.log('last stats3 '+ arrTrans2);
+  var arrTrans3 = arrTrans2.reverse();
+  console.log('last stats4 '+ arrTrans3);
+
+  return arrTrans3;
+}
+
+
+//★★ソート
+function str_sort2d(arrTrans) {
+  var array = arrTrans;
+  var ascending = array.sort(sorting_asc);
+  Logger.log(ascending);
+  var descending = array.sort(sorting_desc);
+  Logger.log(descending);
+  return descending;
+}
+
+function sorting_asc(a, b, c, d){
+  if(a[1] < b[1]){
+    return -1;
+  }else if(a[1] > b[1] ){
+    return 1;
+  }else{
+   return 0;
+  }
+}
+
+function sorting_desc(a, b, c, d){
+  if(a[1] > b[1]){
+    return -1;
+  }else if(a[1] < b[1] ){
+    return 1;
+  }else{
+   return 0;
+  }
 }
 
 
