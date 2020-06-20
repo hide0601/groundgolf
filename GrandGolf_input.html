@@ -141,9 +141,11 @@
         </div>
     </div>
   </center>
-  </template>　<!--通常の表示-->
+  </template>
+  <!--通常の表示-->
   
-  <template v-if="showFin"> 　<!--終了時の表示-->
+　<!--終了時の表示-->
+  <template v-if="showFin">
     <center>
     <p class="ff_kosugi_blue">最終スコア</p>
     </center>
@@ -179,83 +181,55 @@
       </tr>
       <tr>
         <template v-if="showP4">    
-          <th>{{  lists_stats[0][4] }}</th>
-          <th>{{  lists_stats[1][4] }}</th>
-          <th>{{  lists_stats[2][4] }}</th>
-          <th>{{  lists_stats[3][4] }}</th>
+          <th>{{  lists_stats[3][0] }}</th>
+          <th>{{  lists_stats[3][1] }}</th>
+          <th>{{  lists_stats[3][2] }}</th>
+          <th>{{  lists_stats[3][3] }}</th>
         </template>
       </tr>
       <tr>
         <template v-if="showP5">    
-          <th>{{  lists_stats[0][5] }}</th>
-          <th>{{  lists_stats[1][5] }}</th>
-          <th>{{  lists_stats[2][5] }}</th>
-          <th>{{  lists_stats[3][5] }}</th>
+          <th>{{  lists_stats[4][0] }}</th>
+          <th>{{  lists_stats[4][1] }}</th>
+          <th>{{  lists_stats[4][2] }}</th>
+          <th>{{  lists_stats[4][3] }}</th>
         </template>
       </tr>
       <tr>
         <template v-if="showP6">    
-          <th>{{  lists_stats[0][6] }}</th>
-          <th>{{  lists_stats[1][6] }}</th>
-          <th>{{  lists_stats[2][6] }}</th>
-          <th>{{  lists_stats[3][6] }}</th>
+          <th>{{  lists_stats[5][0] }}</th>
+          <th>{{  lists_stats[5][1] }}</th>
+          <th>{{  lists_stats[5][2] }}</th>
+          <th>{{  lists_stats[5][3] }}</th>
         </template>
       </tr>
       <tr>
         <template v-if="showP7">    
-          <th>{{  lists_stats[0][7] }}</th>
-          <th>{{  lists_stats[1][7] }}</th>
-          <th>{{  lists_stats[2][7] }}</th>
-          <th>{{  lists_stats[3][7] }}</th>
+          <th>{{  lists_stats[6][0] }}</th>
+          <th>{{  lists_stats[6][1] }}</th>
+          <th>{{  lists_stats[6][2] }}</th>
+          <th>{{  lists_stats[6][3] }}</th>
         </template>
       </tr>
       <tr>
         <template v-if="showP8">    
-          <th>{{  lists_stats[0][8] }}</th>
-          <th>{{  lists_stats[1][8] }}</th>
-          <th>{{  lists_stats[2][8] }}</th>
-          <th>{{  lists_stats[3][8] }}</th>
+          <th>{{  lists_stats[7][0] }}</th>
+          <th>{{  lists_stats[7][1] }}</th>
+          <th>{{  lists_stats[7][2] }}</th>
+          <th>{{  lists_stats[7][3] }}</th>
         </template>
       </tr>
 
 
     </tbody>
   </table>
-    
-    
-    
+       <button class="button6" @click="get_csv(<?=gameid ?>)" >ダウンロード（CSV）</button>
+       <h8>※ブラウザにより、表示された画面で「再読込」が必要です。</h8>
 
-<!--
-
-<table id="table05" align="center">
-  <tbody>
-        <tr>
-          <th>スコア</th>
-          <td>{{ lists[0] }}</td>
-          <td>{{ lists[1] }}</td>
-        </tr>
-        <tr>
-          <th>ゲーム</th>
-          <td>{{ lists[0] }}</td>
-          <td>{{ lists[1] }}</td>
-        </tr>
-        <tr>
-          <th>セット</th>
-          <td>{{ lists[0] }}</td>
-          <td>{{ lists[1] }}</td>
-        </tr>
-      </tbody>
-    </table>
--->
-    
-    
- 
   </template>
-  
+　<!--終了時の表示-->
+
   </div>  <!-- vue -->
-
-
-
 
 
 <script>
@@ -428,7 +402,7 @@ var vm = new Vue({
             // GAS正常終了時の処理
       console.log('正常stats　取得したデータ: ' + data);
            vm.lists_stats = data;
-           console.log('正常stats内　[0] '+ vm.lists_stats[0]);
+           console.log('正常stats内　[0] '+ vm.lists_stats[3]);
                     })
           .withFailureHandler(function (data) {
             // GASエラー時の処理
@@ -436,6 +410,22 @@ var vm = new Vue({
           })
           .GG_point_stats(sheetname,mem_amount);
   },//stats情報入手の終わり
+  
+  get_csv: function(sheetname){
+  console.log('get_csv ');
+  google.script.run
+    .withSuccessHandler(function (data) {
+       // GAS正常終了時の処理
+     console.log('getcsv取得たデータ: ' + data);
+     window.open(data, '_blank');
+    })
+    .withFailureHandler(function (data) {
+       // GASエラー時の処理
+     console.log('エラー　取得したデータ: ' + JSON.stringify(data));
+    })
+    .getCSV(sheetname);
+  },
+
   
       
     

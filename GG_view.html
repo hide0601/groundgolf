@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <?!= HtmlService.createHtmlOutputFromFile('css').getContent(); ?>
+  <link href="https://fonts.googleapis.com/css?family=Noto+Sans+JP:400,700&display=swap&subset=japanese" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+</head>
+
+<body>
+  <center>
+    <h2 title="GAME No.<?=game_no ?>">大会名.<?=game_name ?></h2>
+  </center>
+  <div class="block" id="app">
+
+  <table id="table06" align="center">
+
+    <thead>
+      <tr>
+        <th>選手</th>
+        <th>合計</th>
+        <th>平均</th>
+        <th>1打回数</th>
+      </tr>
+    </thead>         
+    <tbody>
+      <tr>
+        <th>{{  lists_stats[0][0] }}</th>
+        <th>{{  lists_stats[0][1] }}</th>
+        <th>{{  lists_stats[0][2] }}</th>
+        <th>{{  lists_stats[0][3] }}</th>
+      </tr>
+      <tr>
+        <th>{{  lists_stats[1][0] }}</th>
+        <th>{{  lists_stats[1][1] }}</th>
+        <th>{{  lists_stats[1][2] }}</th>
+        <th>{{  lists_stats[1][3] }}</th>
+      </tr>
+      
+      <tr>
+        <template v-if="showP3">
+          <th>{{  lists_stats[2][0] }}</th>
+          <th>{{  lists_stats[2][1] }}</th>
+          <th>{{  lists_stats[2][2] }}</th>
+          <th>{{  lists_stats[2][3] }}</th>
+        </template>
+      </tr>
+      <tr>
+        <template v-if="showP4">    
+          <th>{{  lists_stats[3][0] }}</th>
+          <th>{{  lists_stats[3][1] }}</th>
+          <th>{{  lists_stats[3][2] }}</th>
+          <th>{{  lists_stats[3][3] }}</th>
+        </template>
+      </tr>
+      <tr>
+        <template v-if="showP5">    
+          <th>{{  lists_stats[4][0] }}</th>
+          <th>{{  lists_stats[4][1] }}</th>
+          <th>{{  lists_stats[4][2] }}</th>
+          <th>{{  lists_stats[4][3] }}</th>
+        </template>
+      </tr>
+      <tr>
+        <template v-if="showP6">    
+          <th>{{  lists_stats[5][0] }}</th>
+          <th>{{  lists_stats[5][1] }}</th>
+          <th>{{  lists_stats[5][2] }}</th>
+          <th>{{  lists_stats[5][3] }}</th>
+        </template>
+      </tr>
+      <tr>
+        <template v-if="showP7">    
+          <th>{{  lists_stats[6][0] }}</th>
+          <th>{{  lists_stats[6][1] }}</th>
+          <th>{{  lists_stats[6][2] }}</th>
+          <th>{{  lists_stats[6][3] }}</th>
+        </template>
+      </tr>
+      <tr>
+        <template v-if="showP8">    
+          <th>{{  lists_stats[7][0] }}</th>
+          <th>{{  lists_stats[7][1] }}</th>
+          <th>{{  lists_stats[7][2] }}</th>
+          <th>{{  lists_stats[7][3] }}</th>
+        </template>
+      </tr>
+
+    </tbody>
+  </table>
+
+    <button class="button3" @click="get_stats(<?=game_no ?>,'<?=mem_amount?>')" >データ更新</button>
+    
+    <div class="parent">
+    <div class="chart-container" style="position: relative; width:100%; height:100%">
+    <p><canvas id="myChart_total_stats"></canvas>
+    </div>
+
+    <div class="chart-container" style="position: relative; width:100%; height:100%">
+    <p><canvas id="myChart_total_serveA"></canvas>
+    </div>
+    </div>   
+    
+    </div> <!--vue app終わり-->
+
+<script>
+var vm = new Vue({
+  el: '#app',
+    data: {
+      hole:<?=starthole ?>,
+      mem_amount:　null,
+      h_len: '',
+      showP3:true,
+      showP4:true,
+      showP5:true,
+      showP6:true,
+      showP7:true,
+      showP8:true,
+      ps_data:[],
+      latest_hole:'',
+      lists_stats:[['',0,0,0],['',0,0,0],['',0,0,0],['',0,0,0],['',0,0,0],['',0,0,0],['',0,0,0],['',0,0,0]],
+  },
+  methods: {
+    get_stats : function(sheetname,mem_amount){
+    google.script.run
+      .withSuccessHandler(function (data) {
+            // GAS正常終了時の処理
+      console.log('正常stats　取得したデータ: ' + data);
+           vm.lists_stats = data;
+           console.log('正常stats内　[0] '+ vm.lists_stats[3]);
+                    })
+          .withFailureHandler(function (data) {
+            // GASエラー時の処理
+            console.log('エラーstats　取得したデータ: ' + data);
+          })
+          .GG_point_stats(sheetname,mem_amount);
+          
+    },//stats情報入手の終わり
+
+    
+    //記録済最新ホール番号
+    getlatest_hole: function(sheetname,ssId) {
+      return new Promise((resolve, reject) => {
+        google.script.run
+          .withSuccessHandler((result) => resolve(result))
+          .withFailureHandler((error) => resolve(error))
+        .latest_hole(sheetname,ssId);
+        });
+      },//最新ホール終     
+    
+},//method終わり
+
+mounted:function(){
+  var showP3 = "";
+  var showP4 = "";
+  var showP5 = "";
+  var showP6 = "";
+  var showP7 = "";
+  var showP8 = "";
+
+  if(<?=mem_amount?> == "2"){
+    this.showP3 = false;
+    this.showP4 = false;
+    this.showP5 = false;
+    this.showP6 = false;
+    this.showP7 = false;
+    this.showP8 = false;
+  }
+  else if(<?=mem_amount?> == "3"){
+    this.showP4 = false;
+    this.showP5 = false;
+    this.showP6 = false;
+    this.showP7 = false;
+    this.showP8 = false;
+  }
+  else if(<?=mem_amount?> == "4"){
+    this.showP5 = false;
+    this.showP6 = false;
+    this.showP7 = false;
+    this.showP8 = false;
+  }  
+  else if(<?=mem_amount?> == "5"){
+    this.showP6 = false;
+    this.showP7 = false;
+    this.showP8 = false;
+  }  
+  else if(<?=mem_amount?> == "6"){
+    this.showP7 = false;
+    this.showP8 = false;
+  }  
+  else if(<?=mem_amount?> == "7"){
+    this.showP8 = false;
+  }
+},//moutedの終わり
+
+
+
+})//vueの終わり
+
+
+</script>
+
+</body>
+
+</html>

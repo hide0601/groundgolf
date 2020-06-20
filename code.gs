@@ -180,7 +180,7 @@ else if(param == 'ggqa'){
     var range = sh.getRange(lastRow,1,1,1);
     var gid = range.getValue();
     
-    var temp = HtmlService.createTemplateFromFile("GroundGolf_view");//★★まだつくってない
+    var temp = HtmlService.createTemplateFromFile("GG_view");//★★まだつくってない
    
     var vgid = e.parameter.viewgid;
     temp.gameid = vgid;
@@ -198,27 +198,34 @@ else if(param == 'ggqa'){
       var temp = HtmlService.createTemplateFromFile("GG_view_error");//鑑賞のGameIDがない場合の処理
       return temp.evaluate().setTitle('GG_view_error').addMetaTag('viewport', 'width=device-width, initial-scale=1');
     }
+    
    //対象行を入手（二次配列）　★★ゲーム情報の取得　未作成
-    var scoreAll = sh.getRange(vfgid,1,1,9).getValues();
+    var lastCol = sh.getRange(vfgid, 1).getNextDataCell(SpreadsheetApp.Direction.NEXT).getColumn();
+    var lastCol = Number(lastCol);
+    var mem_amount = lastCol - 6;
+    console.log ('mem_amout ' +  mem_amount);
+    var scoreAll = sh.getRange(vfgid,4,1,3).getValues();
+    console.log('scoreAll ' + scoreAll);
     //二次配列を一次配列
-    var scoreAllRow = scoreAll[0];
-    var vgameid = scoreAllRow[0];
-    var vgidname = scoreAllRow[3];
-    var vplayerA = scoreAllRow[4];
-    var vplayerB = scoreAllRow[5];   
-         
-    temp.vgidnammehtml = vgidname;
-    temp.playerA = vplayerA;
-    temp.playerB = vplayerB;
-    temp.com_ssId = ssId; 
+    var scoreAll = scoreAll[0]
+    var game_name = scoreAll[0];
+    console.log('game_name ' + game_name);
+    var starthole = scoreAll[1];
+    var course_name = scoreAll[2];
+    console.log('course_name ' + course_name);
+
+    temp.game_no = vgid;
+    temp.game_name = game_name;
+    temp.course_name = course_name;
+    temp.ssId = ssId;
+    temp.starthole = starthole;
+    temp.mem_amount = mem_amount;
      
-    return temp.evaluate().setTitle('ViewTennisStats!').addMetaTag('viewport', 'width=device-width, initial-scale=1');
+    return temp.evaluate().setTitle('ViewGroundGolfStats!').addMetaTag('viewport', 'width=device-width, initial-scale=1')
+    .setFaviconUrl('https://drive.google.com/uc?id=1rvttJYokHuEnkGCEcwWWeOK7IEo3kVVc&.png');
+
+
   }  
-  
-  
-  
-  
-  
   
 }//doPost終了
 
@@ -226,8 +233,6 @@ else if(param == 'ggqa'){
 //★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★
 //★★★★★★★★★★★★★　　関数群　　★★★★★★★★★★★★★★★★
 //★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★
-
-
 
 //●GGスコア記録
 function GG_PointInput(sheetname,hole,h_len,sr1,sr2,sr3,sr4,sr5,sr6,sr7,sr8,men_amount){
@@ -275,14 +280,10 @@ function GG_PointInput(sheetname,hole,h_len,sr1,sr2,sr3,sr4,sr5,sr6,sr7,sr8,men_
     
   console.log('hole '+hole);
   var last_score = [[hole,sr1,sr2,sr3,sr4,sr5,sr6,sr7,sr8,h_len,date]];
-  console.log(last_score);
   sh.getRange(last_row+1, 1,1,11).setValues(last_score);
   var hole = Number(hole);
-  console.log('hole2 ' + hole);  
   var hole = hole + 1;
-  console.log('hole3 ' + hole);
   var last_row = sh.getLastRow();
-  console.log('gginpute lastrow ' + last_row);
   if(last_row =='12'){
        console.log('ggpoint lastholw ');
     var hole = 0;
@@ -343,24 +344,23 @@ function latest_hole(sheetName,ssId){
 function GG_point_stats(sheetname,mem_amount){
   Utilities.sleep(2000);//最新データが書き込まれるのWait（←本当はさけたい）
   var ssId = '1tuBaA_yE9fQgojqtp4Mzj-R0gvr0-4-6WjJZyeh6hX8'; //GroundGolf_Score_2020_01
+  console.log('sheetname '+sheetname);
   var ss = SpreadsheetApp.openById(ssId);
   var sh = ss.getSheetByName(sheetname);
   var mem_amount = Number(mem_amount);
+  console.log('mem_amount ' + mem_amount);
   var range = sh.getRange(1,2,4,mem_amount);
   var GG_total_score = range.getValues();
-  console.log('last stats '+ GG_total_score);  
-  var _ = Underscore.load();//ライブラリを使って配列の行・列を入替え
-  var arrTrans = _.zip.apply(_, GG_total_score);
-  console.log('laste stats 2 '+arrTrans);
-  
-  var arrTrans2 = str_sort2d(arrTrans);
-  console.log('last stats3 '+ arrTrans2);
-  var arrTrans3 = arrTrans2.reverse();
-  console.log('last stats4 '+ arrTrans3);
 
+  var _ = Underscore.load();//ライブラリを使って配列の行・列を入替え（次とセット）
+  var arrTrans = _.zip.apply(_, GG_total_score);  //ライブラリを使って配列の行・列を入替え
+
+  var arrTrans2 = str_sort2d(arrTrans);//下記のsort2dでソート
+  var arrTrans3 = arrTrans2.reverse();//降順しかとれなかったので、入替え
+  console.log ('arrTrans3 '+arrTrans3);
+  
   return arrTrans3;
 }
-
 
 //★★ソート
 function str_sort2d(arrTrans) {
@@ -391,6 +391,25 @@ function sorting_desc(a, b, c, d){
    return 0;
   }
 }
+
+//●csv情報を入手
+
+function getCSV(sheetname) {
+  console.log('get_csv');
+  var ssId = '1tuBaA_yE9fQgojqtp4Mzj-R0gvr0-4-6WjJZyeh6hX8'; //GroundGolf_Score_2020_01
+  var ss = SpreadsheetApp.openById(ssId);
+  var sh = ss.getSheetByName(sheetname);
+  var url_all = ss.getUrl();
+  console.log('url_all ' + url_all);
+  var url = url_all.slice( 0, -4) ;
+  console.log('url ' + url);
+  var page_id = sh.getSheetId();
+  console.log('page_id ' + page_id);  
+  var SheetURL = url + "export?format=csv&gid="+ page_id;
+  console.log('sheeturl ' + SheetURL);
+  return SheetURL;
+}
+
 
 
 
@@ -902,17 +921,7 @@ function get_setnum(game,vs_game,set,vs_set,setnum,point){
 
 
 
-//●対象シートのcsvダウンロード用URL取得
-function getCSV(sheetname,ssId) {
-  var ssId = ssId;
-  var ss = SpreadsheetApp.openById(ssId);
-  var sh = ss.getSheetByName(sheetname);
-  var url_all = ss.getUrl();
-  var url = url_all.slice( 0, -4) ;
-  var page_id = sh.getSheetId();  
-  var SheetURL = url + "export?format=csv&gid="+ page_id;   
-  return SheetURL;
-}
+
 
 //●日時分秒取得
 function GetNow() {
