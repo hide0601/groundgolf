@@ -312,19 +312,30 @@ function GG_latest_point(sheetname,ssId,mem_amount){
 
 
 //●シート最新情報削除
-function undo_score(sheetName,ssId){
+function undo_score(sheetName,ssId,starthole){
 //  var ssId = '10-19IiogcPd5SdyP1_OU6tUXEob7V_OOOziKnbT0LSg';
   var ss = SpreadsheetApp.openById(ssId);
   var sh = ss.getSheetByName(sheetName);
   var last_row = sh.getLastRow();
-  sh.deleteRows(last_row);
-  var last_row = sh.getLastRow();
   var range = sh.getRange(last_row,1,1,1);
+  var hole_check = range.getValues();
+  sh.deleteRows(last_row);
+  var last_row2 = sh.getLastRow();
+  
+  if( hole_check == starthole){
+    var hole = starthole;
+  }
+  else if(hole_check == 1){
+    var hole = 1
+  }
+  else{
+  var range = sh.getRange(last_row2,1,1,1);
   var hole = range.getValues();
   var hole = Number(hole);
-
-  console.log('deleteのhole ' + hole);
+  
   hole = hole + 1;
+  }
+  console.log('deleteの戻すhole　'+hole);
   return hole;  
 }  
 

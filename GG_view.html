@@ -13,9 +13,11 @@
     <h2 title="GAME No.<?=game_no ?>">大会名.<?=game_name ?></h2>
   </center>
   <div class="block" id="app">
+　<center>
+    <p>終了ホール：{{  latest_hole }}　スタートホール：<?=starthole ?></p>
+  </center>
 
   <table id="table06" align="center">
-
     <thead>
       <tr>
         <th>選手</th>
@@ -89,20 +91,10 @@
 
     </tbody>
   </table>
-
-    <button class="button3" @click="get_stats(<?=game_no ?>,'<?=mem_amount?>')" >データ更新</button>
-    
-    <div class="parent">
-    <div class="chart-container" style="position: relative; width:100%; height:100%">
-    <p><canvas id="myChart_total_stats"></canvas>
-    </div>
-
-    <div class="chart-container" style="position: relative; width:100%; height:100%">
-    <p><canvas id="myChart_total_serveA"></canvas>
-    </div>
-    </div>   
-    
-    </div> <!--vue app終わり-->
+    <center>
+      <button class="button3" @click="get_stats(<?=game_no ?>,'<?=mem_amount?>');getlatest_hole(<?=gameid ?>,'<?=ssId?>')" >データ更新</button>
+    </center>
+  </div> <!--vue app終わり-->
 
 <script>
 var vm = new Vue({
@@ -135,21 +127,25 @@ var vm = new Vue({
             console.log('エラーstats　取得したデータ: ' + data);
           })
           .GG_point_stats(sheetname,mem_amount);
-          
-    },//stats情報入手の終わり
-
+     },//stats情報入手の終わり
+     
+    //最終ホール入手
+    getlatest_hole : function(sheetname,ssId){
+    google.script.run
+      .withSuccessHandler(function (data) {
+            // GAS正常終了時の処理
+      console.log('正常last_hole　取得したデータ: ' + data);
+           vm.latest_hole = data;
+           console.log('正常last_hole '+ data);
+                    })
+          .withFailureHandler(function (data) {
+            // GASエラー時の処理
+            console.log('エラーstats　取得したデータ: ' + data);
+          })
+          .latest_hole(sheetname,ssId);
+     },//last_hole情報入手の終わり
     
-    //記録済最新ホール番号
-    getlatest_hole: function(sheetname,ssId) {
-      return new Promise((resolve, reject) => {
-        google.script.run
-          .withSuccessHandler((result) => resolve(result))
-          .withFailureHandler((error) => resolve(error))
-        .latest_hole(sheetname,ssId);
-        });
-      },//最新ホール終     
-    
-},//method終わり
+  },//method終わり
 
 mounted:function(){
   var showP3 = "";
