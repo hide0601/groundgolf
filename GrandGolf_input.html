@@ -129,8 +129,7 @@
 
     <center>
     <button class="button3" @click="put_score(<?=gameid ?>,hole,h_len,sr1,sr2,sr3,sr4,sr5,sr6,sr7,sr8,<?=mem_amount?>);get_graff(<?=gameid ?>,'<?=com_ssId?>',<?=mem_amount?>)" >データ入力</button>
-    <button class="button5" @click="undo_score(<?=gameid ?>,'<?=com_ssId?>',<?=starthole?>);get_graff(<?=gameid ?>,'<?=com_ssId?>',<?=mem_amount?>)">前ホールやり直し</button>
-
+    <button class="button5" @click="undo_score(<?=gameid ?>,'<?=com_ssId?>',<?=starthole?>);get_graff(<?=gameid ?>,'<?=com_ssId?>',<?=mem_amount?>)">前ホール取消</button>
     </center>
     
     <!-- グラフ　-->
@@ -224,8 +223,15 @@
 
     </tbody>
   </table>
-       <button class="button6" @click="get_csv(<?=gameid ?>)" >ダウンロード（CSV）</button>
-       <h8>※ブラウザにより、表示された画面で「再読込」が必要です。</h8>
+       <button class="button6" @click="get_csv(<?=gameid ?>)" >ダウンロード（CSV）</button><br>
+       <h8>※ダンロードはブラウザにより、表示された画面で「再読込」が必要です。</h8>
+       <!-- リンクするが、ろぐいんNG
+       <strong>
+        　　<a top.location.href="https://groundgolf.club/">
+           <h8>GroundGolfClubに戻る</h8></a>
+       </strong>
+       -->
+
 
   </template>
 　<!--終了時の表示-->

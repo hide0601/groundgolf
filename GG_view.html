@@ -95,6 +95,16 @@
       <button class="button3" @click="get_stats(<?=game_no ?>,'<?=mem_amount?>');getlatest_hole(<?=gameid ?>,'<?=ssId?>')" >データ更新</button>
     </center>
   </div> <!--vue app終わり-->
+  
+  <!--
+    <div class="kakomi-maru3">試合番号再入力</div><br>
+      <form method="post" action="https://script.google.com/macros/s/AKfycbzQaXKek7UwUiJLF5X01vWgsMsYy2l3PF4L1f-loHmXEmZ0pj4/exec?param=gg_view" accept-charset="utf-8">   
+        <div class = "h_web_font">
+          <label>試合番号：<input type="number" min="1" name="viewgid"></label><br><br>
+          <input type="submit" class = "form_button" value="送信する"><hr>
+        </div>
+      </form>
+  -->
 
 <script>
 var vm = new Vue({
